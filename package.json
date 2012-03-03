@@ -1,0 +1,10 @@
+{
+    "name": "tpms"
+  , "version": "0.0.2"
+  , "private": true
+  , "dependencies": {
+      "express": "2.5.8"
+    , "jade": ">= 0.0.1"
+		, "passport": "0.1.6"
+  }
+}

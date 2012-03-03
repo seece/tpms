@@ -1,0 +1,16 @@
+h2= "Log in, please"
+form( name='login', action='login', method='post')
+	label Username:
+
+	// inline html to add the autofocus attribute
+	| <input type="text" name="username" autofocus />
+	| <br />
+	label Password:
+
+	input(type='password',
+		name='password')
+
+	| <br />
+
+	input(type='submit',
+		value='Login')
