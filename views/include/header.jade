@@ -1,1 +1,10 @@
 h1 the party management system
+
+if logged_in == true
+	a(href="user/logout") logout
+else
+	div#loginbox
+		// these should be absolute links
+		a(href="user/login") login
+		|  |
+		a(href="user/register") register 

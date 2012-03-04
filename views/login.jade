@@ -1,16 +1,22 @@
-h2= "Log in, please"
-form( name='login', action='login', method='post')
-	label Username:
+if logged_in == true
+	h2= "You are already logged in!"	
+	p No need to log in again.
+	
+	a(href="/") go back 
+else
+	h2= "Log in, please"
+	form( name='login', action='login', method='post')
+		label Username:
 
-	// inline html to add the autofocus attribute
-	| <input type="text" name="username" autofocus />
-	| <br />
-	label Password:
+		// inline html to add the autofocus attribute
+		| <input type="text" name="username" autofocus />
+		| <br />
+		label Password:
 
-	input(type='password',
-		name='password')
+		input(type='password',
+			name='password')
 
-	| <br />
+		| <br />
 
-	input(type='submit',
-		value='Login')
+		input(type='submit',
+			value='Login')

@@ -1,18 +1,21 @@
-//exports.compo = require('./routes/index');
-
-//exports.compo = function (req, res) {
-//	console.log("OH YEAH");
-//};
+//var async = require(async);
 
 function ensureAuthenticated(req, res, next) {
+	console.log("ENSURING");
+	console.log(req._user_);
 	if (req.isAuthenticated()) { return next(); }
+	console.log("FAILURE");
 	res.redirect('/user/login');
 };
 
 exports.index = function (req, res) {
 
 	console.log("Index GET!");
-	res.render('main', {title: "tpms"});
+	if (req.isAuthenticated()) {
+		res.render('main', {title: "tpms", logged_in: true});
+	} else {
+		res.render('main', {title: "tpms", logged_in: false});
+	}
 };
 
 exports.compo = function (req, res) {
@@ -41,8 +44,10 @@ exports.register = function (req, res) {
 exports.login = function (req, res) {
 	console.log("Login GET!");
 	// check if logged in, if not, display login screen
-	
-	res.render('login', {title: 'Login'});
+	res.render('login', {
+		title: 'Login', 
+		logged_in: req.isAuthenticated()
+	});
 };
 
 exports.listusers = function (req, res) {

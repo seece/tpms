@@ -8,6 +8,7 @@ var express = require('express')
   , routes = require('./routes')
 	, async = require('async')
 	, mongoose = require('mongoose')
+	, connect = require('connect')
 	, users = require('./users')
 	, Schema = mongoose.Schema
 	, LocalStrategy = require('passport-local').Strategy;
@@ -17,9 +18,26 @@ passport.use(new LocalStrategy(
 			// let everyone through :D/		
 			console.log("User " + username + " trying to log in.");
 			var user = users.data[0];
-			done(null, user);
+			if (username == users.data[0].username) {
+				if (password == users.data[0].password) {
+					// correct!
+					done(null, user);
+					
+				}
+
+			}
+
+		done(null, false);
 	}
 ));
+
+function findById(id, fn) {
+	for (var i=0;i<users.data.length-1;i++) {
+		if (users.data[i].id == id) {
+			fn(null, users.data[i]);
+		}
+	}
+};
 
 passport.serializeUser(function(user, done) {
 		  done(null, user.id);
@@ -30,7 +48,6 @@ passport.deserializeUser(function(id, done) {
 					    done(err, user);
 							  });
 });
-
 
 
 var app = module.exports = express.createServer();
@@ -66,8 +83,10 @@ var User = new Schema({
 app.configure(function(){
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
+	app.use(express.cookieParser());
   app.use(express.bodyParser());
   app.use(express.methodOverride());
+	app.use(express.session({ secret: 'TAIKASANA!' }));
 	app.use(passport.initialize());
 	app.use(passport.session());
   app.use(app.router);
