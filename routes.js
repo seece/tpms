@@ -4,9 +4,15 @@
 //	console.log("OH YEAH");
 //};
 
+function ensureAuthenticated(req, res, next) {
+	if (req.isAuthenticated()) { return next(); }
+	res.redirect('/user/login');
+};
+
 exports.index = function (req, res) {
 
 	console.log("Index GET!");
+	res.render('main', {title: "tpms"});
 };
 
 exports.compo = function (req, res) {
@@ -41,6 +47,10 @@ exports.login = function (req, res) {
 
 exports.listusers = function (req, res) {
 	console.log("User list GET!");
+
+	ensureAuthenticated(req, res, function () {
+		res.render('userlist', {title: 'List all users'});	
+	});
 };
 
 

@@ -8,14 +8,30 @@ var express = require('express')
   , routes = require('./routes')
 	, async = require('async')
 	, mongoose = require('mongoose')
+	, users = require('./users')
 	, Schema = mongoose.Schema
 	, LocalStrategy = require('passport-local').Strategy;
 
 passport.use(new LocalStrategy(
 	function (username, password, done) {
-
+			// let everyone through :D/		
+			console.log("User " + username + " trying to log in.");
+			var user = users.data[0];
+			done(null, user);
 	}
 ));
+
+passport.serializeUser(function(user, done) {
+		  done(null, user.id);
+});
+
+passport.deserializeUser(function(id, done) {
+		  findById(id, function (err, user) {
+					    done(err, user);
+							  });
+});
+
+
 
 var app = module.exports = express.createServer();
 
@@ -68,11 +84,18 @@ app.configure('production', function(){
 
 // Routes
 //
-app.post('/login', passport.authenticate('local'),
+app.post('/user/login', passport.authenticate('local'),
 				function (req, res) {
 					console.log("HOLY SHIT successful login!");
 					console.log(req.user);
+					res.redirect('/');
 				});
+
+app.get('/user/logout', function (req, res, next){
+	console.log("Logging out.");
+	req.logout();
+	res.redirect('/');
+});
 
 app.get('/', routes.index);
 app.get('/compo/:componame?/:entryid?', routes.compo); 
