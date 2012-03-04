@@ -1,8 +1,8 @@
-/*
- * GET home page.
- */
+var Log = require('log')
+	, log = new Log('DEBUG');
 
-exports.compo = function(req, res){
-	console.log("Compo get");
-  //	res.render('compo', { title: 'FUX' })
-}
+exports.createCompo = function (name, description, fn) {
+	log.debug("Creating a new compo, bro");
+
+	fn(null);
+};

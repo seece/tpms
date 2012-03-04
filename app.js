@@ -15,6 +15,10 @@ var express = require('express')
 	, LocalStrategy = require('passport-local').Strategy
 	, log = new Log('DEBUG');
 
+
+var db = require('./db');
+db = db.init();
+
 passport.use(new LocalStrategy(
 	function (username, password, done) {
 			// let everyone through :D/		
@@ -51,34 +55,7 @@ passport.deserializeUser(function(id, done) {
 							  });
 });
 
-
 var app = module.exports = express.createServer();
-
-mongoose.connect('mongodb://localhost/tpms');
-
-// Database schemas
-
-var Compo = new Schema({
-	name			: String,
-	created 	: { type: Date, default: Date.now},
-	deadline 	: { type: Date }
-});
-
-var Entry = new Schema({
-		name	: { type: String, max: 256 },
-		id		: Number,
-		format: String,
-		created: { type: Date, default: Date.now}
-		// needs an owner field...
-});
-
-var User = new Schema({
-	name			: { type: String, max: 64},
-	joined		:	{ type: Date, default: Date.now},
-	group			:	String,
-	email			: String,
-	password	: String
-});
 
 // Configuration
 
@@ -120,11 +97,14 @@ app.get('/user/logout', function (req, res, next){
 });
 
 app.get('/', routes.index);
-app.get('/compo/:componame?/:entryid?', routes.compo); 
+
+// a massive route :(
+app.post('/compo/createcompo', routes.createcompo);
+app.get('/compo/:action?/:parameter?/:entry?', routes.compo); 
 
 app.get('/user/register', routes.register);
 app.get('/user/login', routes.login);
 app.get('/user/list', routes.listusers);
 
 app.listen(3000);
-log.info("A brand new tpms server listening on port %d in %s mode, ready to rok", app.address().port, app.settings.env);
+log.info("A brand new tpms server listening on port "+app.address().port+" in "+app.settings.env+" mode, ready to rok");

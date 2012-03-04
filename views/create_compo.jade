@@ -1,0 +1,17 @@
+h2 Create a new compo
+form( name='createcompo', action='createcompo', method='post') 
+	label compo name: 
+	input(type='text',
+		name='componame', 
+		autofocus)
+	| <br />
+	label description:
+	| <br />
+	textarea(
+		name='description')
+	| <br />
+	label deadline:
+	| <br />
+
+	input(type='submit',
+		value='create compo')

@@ -1,2 +1,17 @@
 h2= "welcome to tpms"
+if success
+	p.notice.green #{success}
+if errormessage
+	p.notice #{errormessage}
+
+if logged_in
+	if admin
+		p.notice you have administrator privileges
+		div.toolbox
+			h3 Compos
+			- var create_compo_url = basepath + 'compo/create'
+			a(href=create_compo_url) create a new compo 
+			h3 Users
+			- var list_users_url = basepath + 'users/list'
+			a(href=list_users_url) list users 
 
