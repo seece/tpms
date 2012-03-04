@@ -9,9 +9,11 @@ var express = require('express')
 	, async = require('async')
 	, mongoose = require('mongoose')
 	, connect = require('connect')
+	, Log = require('log')
 	, users = require('./users')
 	, Schema = mongoose.Schema
-	, LocalStrategy = require('passport-local').Strategy;
+	, LocalStrategy = require('passport-local').Strategy
+	, log = new Log('DEBUG');
 
 passport.use(new LocalStrategy(
 	function (username, password, done) {
@@ -105,13 +107,14 @@ app.configure('production', function(){
 //
 app.post('/user/login', passport.authenticate('local'),
 				function (req, res) {
-					console.log("HOLY SHIT successful login!");
-					console.log(req.user);
+					log.debug("HOLY SHIT "+ req.user.username +" logged in.");
 					res.redirect('/');
 				});
 
 app.get('/user/logout', function (req, res, next){
-	console.log("Logging out.");
+	if (req.user !== undefined) {
+		log.debug(req.user.username + " logging out.");
+	}
 	req.logout();
 	res.redirect('/');
 });
@@ -124,4 +127,4 @@ app.get('/user/login', routes.login);
 app.get('/user/list', routes.listusers);
 
 app.listen(3000);
-console.log("A brand new tpms server listening on port %d in %s mode, ready to rok", app.address().port, app.settings.env);
+log.info("A brand new tpms server listening on port %d in %s mode, ready to rok", app.address().port, app.settings.env);

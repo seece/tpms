@@ -1,10 +1,15 @@
-h1 the party management system
+- var magic = basepath;
 
 if logged_in == true
-	a(href="user/logout") logout
-else
+	- var logout_url = basepath + 'user/logout'
 	div#loginbox
-		// these should be absolute links
-		a(href="user/login") login
+		a(href=logout_url) logout
+else
+	- var login_url = basepath + 'user/login'
+	- var register_url = basepath + 'user/register'
+	div#loginbox
+		a(href=login_url) login
 		|  |
-		a(href="user/register") register 
+		a(href=register_url) register 
+
+h1 the party management system
