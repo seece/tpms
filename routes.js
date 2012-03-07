@@ -1,5 +1,6 @@
 //var async = require(async);
 var compo = require("./compo");
+var db;
 
 var extend = function(obj, defaults_obj) {
 	for (var i in defaults_obj) {        
@@ -17,6 +18,10 @@ var defaults = {
 	title : "tpms",
 	basepath : "http://localhost:3000/"
 };
+
+exports.setDB = function(database) {
+	db = database;	
+}
 
 // supplies basic settings to the template
 // also checks if user has logged in
@@ -88,7 +93,7 @@ exports.createcompo = function (req, res) {
 			});
 		} else {
 		// TODO: add the compo to the DB
-		compo.createCompo({name: "magic-compo!"}, function(err) {
+		compo.saveCompo(db, {name: "magic-compo!"}, function(err) {
 
 			renderWithDefaults(req, res, 'main', {
 				success: 'compo "'+componame+'" created successfully'

@@ -13,11 +13,19 @@ var express = require('express')
 	, users = require('./users')
 	, Schema = mongoose.Schema
 	, LocalStrategy = require('passport-local').Strategy
-	, log = new Log('DEBUG');
-
+	, log = new Log('DEBUG')	 // kinda useless
+	, models = require('./models');
 
 var db = require('./db');
-db = db.init();
+
+var app = module.exports = express.createServer();
+
+models.defineModels(mongoose, function() {
+	app.Compo = Compo = mongoose.model('Compo');
+	// actually connect to the db (needs to be done only once)		
+	db = db.init();
+	routes.setDB(db);
+})
 
 passport.use(new LocalStrategy(
 	function (username, password, done) {
@@ -55,7 +63,6 @@ passport.deserializeUser(function(id, done) {
 							  });
 });
 
-var app = module.exports = express.createServer();
 
 // Configuration
 

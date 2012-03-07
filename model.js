@@ -1,27 +1,38 @@
-var mongoose = require('mongoose')
-	, Schema = mongoose.Schema
+//var mongoose = require('mongoose')
+//	, Schema = mongoose.Schema
 
 // Database schemas
+function defineModels(mongoose, fn) {
+	var Schema = mongoose.Schema,
+			ObjectId = Schema.ObjectId;
 
-exports.Compo = new Schema({
-	name			: String,
-	created 	: { type: Date, default: Date.now},
-	deadline 	: { type: Date }
-});
+	Compo = new Schema({
+		name			: String,
+		created 	: { type: Date, default: Date.now},
+		deadline 	: { type: Date }
+	});
 
-exports.Entry = new Schema({
-		name	: { type: String, max: 256 },
-		id		: Number,
-		format: String,
-		created: { type: Date, default: Date.now}
-		// needs an owner field...
-});
+	Entry = new Schema({
+			name	: { type: String, max: 256 },
+			id		: Number,
+			format: String,
+			created: { type: Date, default: Date.now}
+			// needs an owner field...
+	});
 
-exports.User = new Schema({
-	name			: { type: String, max: 64},
-	joined		:	{ type: Date, default: Date.now},
-	group			:	String,
-	email			: String,
-	password	: String
-});
+	User = new Schema({
+		name			: { type: String, max: 64, index: {unique: true}},
+		joined		:	{ type: Date, default: Date.now},
+		group			:	String,
+		email			: String,
+		password	: String
+	});
 
+
+	mongoose.model('Compo', Compo);
+	mongoose.model('Entry', Entry);
+	mongoose.model('User', User);
+	fn();
+}
+
+exports.defineModels = defineModels;

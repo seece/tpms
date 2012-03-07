@@ -2,7 +2,8 @@
 html
 	head
 		title= title
-		link(rel='stylesheet', href='/stylesheets/style.css')
+		link(rel='stylesheet', href=basepath + '/stylesheets/style.css')
+		script(type='text/javascript', src=basepath + 'javascripts/jquery-1.7.1.min.js')
 	body
 		include include/header
 		!= body
