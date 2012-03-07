@@ -23,6 +23,10 @@ a {
 	padding:5px;
 }
 
+.itembox {
+	border: 1px solid black;
+}
+
 .notice {
 	padding:5px;
 	border: 1px solid #777;

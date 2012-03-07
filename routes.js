@@ -105,6 +105,7 @@ exports.index = function (req, res) {
 	console.log("Index GET!");
 
 	// a quick test
+	/*
 	compoModelInstance.save(function (err) {
 		if (err !== null) {
 			console.log(err);
@@ -112,8 +113,10 @@ exports.index = function (req, res) {
 			console.log("Saved some stuff, at least according to mongoose.");
 		}
 	});
+	*/
 		renderWithDefaults(req, res, 'main', {});
 	};
+
 
 exports.createcompo = function (req, res) {
 	if (isAdmin(req, res)) {
@@ -140,7 +143,9 @@ exports.createcompo = function (req, res) {
 var compoList = function (fn) {
 	console.log("Compo list in action, sire");
 	compoModel.find({}, function (err, docs) {
-		console.log(docs);
+		console.log("ARGARVH: " + typeof(docs));
+		console.log(docs[0]);
+		//var temp = [ { name: "a", description: "b" } ];
 		fn(docs);
 	});
 
@@ -159,7 +164,7 @@ exports.compo = function (req, res) {
 				// list all the compos
 				var pagetitle = 'All compos';
 				compoList( function (obj) {
-					renderWithDefaults(req, res, 'compo_list', {title: 'jaja', list : obj})
+					renderWithDefaults(req, res, 'compo_list', {title: 'jaja', compos : obj})
 				});
 
 			} else {

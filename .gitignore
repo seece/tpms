@@ -1,5 +1,7 @@
 *.swp
 *.swo
 *.*~
+*.orig
+*.log
 config.json
 users.js
