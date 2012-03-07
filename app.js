@@ -5,7 +5,7 @@
 
 var express = require('express')
 	, passport = require('passport')
-  , routes = require('./routes')
+  	, routes = require('./routes')
 	, async = require('async')
 	, mongoose = require('mongoose')
 	, connect = require('connect')
@@ -13,23 +13,10 @@ var express = require('express')
 	, users = require('./users')
 	, Schema = mongoose.Schema
 	, LocalStrategy = require('passport-local').Strategy
-	, log = new Log('DEBUG')	 // kinda useless
-	, models = require('./models');
-
-var db = require('./db');
-
-var app = module.exports = express.createServer();
-
-models.defineModels(mongoose, function() {
-	app.Compo = Compo = mongoose.model('Compo');
-	// actually connect to the db (needs to be done only once)		
-	db = db.init();
-	routes.setDB(db);
-})
+	, log = new Log('DEBUG');
 
 passport.use(new LocalStrategy(
 	function (username, password, done) {
-			// let everyone through :D/		
 			console.log("User " + username + " trying to log in.");
 			var user = users.data[0];
 			if (username == users.data[0].username) {
@@ -63,6 +50,7 @@ passport.deserializeUser(function(id, done) {
 							  });
 });
 
+var app = module.exports = express.createServer();
 
 // Configuration
 
