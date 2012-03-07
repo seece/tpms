@@ -5,7 +5,7 @@
 
 var express = require('express')
 	, passport = require('passport')
-  , routes = require('./routes')
+  	, routes = require('./routes')
 	, async = require('async')
 	, mongoose = require('mongoose')
 	, connect = require('connect')
@@ -15,13 +15,8 @@ var express = require('express')
 	, LocalStrategy = require('passport-local').Strategy
 	, log = new Log('DEBUG');
 
-
-var db = require('./db');
-db = db.init();
-
 passport.use(new LocalStrategy(
 	function (username, password, done) {
-			// let everyone through :D/		
 			console.log("User " + username + " trying to log in.");
 			var user = users.data[0];
 			if (username == users.data[0].username) {

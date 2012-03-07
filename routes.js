@@ -1,5 +1,38 @@
-//var async = require(async);
-var compo = require("./compo");
+var Log = require('log')
+	, log = new Log('DEBUG')
+	, mongoose = require('mongoose');
+
+var Schema = mongoose.Schema 
+	, ObjectId = Schema.ObjectId;
+
+var server_name = "localhost";
+var db_name = "tpms";
+
+var db = mongoose.connect('mongodb://'+server_name+'/'+db_name);
+log.debug('Connecting to MongoDB "' +db_name+ '" at ' + server_name);
+
+// Database schema
+//
+var Compo = new Schema({
+	name : String,
+	description : String
+});
+
+var compoModel = mongoose.model('Compo', Compo);
+
+var compoModelInstance = new compoModel();
+compoModelInstance.name = "kompo!";
+compoModelInstance.description= "the best compo";
+
+/*
+compoModelInstance.save(function (err) {
+	if (err !== null) {
+		console.log(err);
+	} else {
+		console.log("Saved some stuff, at least according to mongoose.");
+	}
+});
+*/
 
 var extend = function(obj, defaults_obj) {
 	for (var i in defaults_obj) {        
@@ -70,8 +103,17 @@ String.prototype.trim = function () {
 exports.index = function (req, res) {
 
 	console.log("Index GET!");
-	renderWithDefaults(req, res, 'main', {});
-};
+
+	// a quick test
+	compoModelInstance.save(function (err) {
+		if (err !== null) {
+			console.log(err);
+		} else {
+			console.log("Saved some stuff, at least according to mongoose.");
+		}
+	});
+		renderWithDefaults(req, res, 'main', {});
+	};
 
 exports.createcompo = function (req, res) {
 	if (isAdmin(req, res)) {
@@ -88,16 +130,20 @@ exports.createcompo = function (req, res) {
 			});
 		} else {
 		// TODO: add the compo to the DB
-		compo.createCompo({name: "magic-compo!"}, function(err) {
 
-			renderWithDefaults(req, res, 'main', {
-				success: 'compo "'+componame+'" created successfully'
-			});
-		});
 		}
 	} else {
 		res.redirect('user/login');
 	}
+};
+
+var compoList = function (fn) {
+	console.log("Compo list in action, sire");
+	compoModel.find({}, function (err, docs) {
+		console.log(docs);
+		fn(docs);
+	});
+
 };
 
 exports.compo = function (req, res) {
@@ -112,7 +158,10 @@ exports.compo = function (req, res) {
 			if (currentcompo === undefined) {
 				// list all the compos
 				var pagetitle = 'All compos';
-				renderWithDefaults(req, res, 'compo_list', {title: 'jaja'});
+				compoList( function (obj) {
+					renderWithDefaults(req, res, 'compo_list', {title: 'jaja', list : obj})
+				});
+
 			} else {
 				// TODO: Check if compo exists
 				if (currententry == undefined) {
