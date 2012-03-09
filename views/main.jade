@@ -5,9 +5,12 @@ if errormessage
 	p.notice #{errormessage}
 
 if logged_in
+	div.toolbox
+		a(href=basepath + 'compo/view') view all compos
 	if admin
 		p.notice you have administrator privileges
 		div.toolbox
+			h2 Admin tools
 			h3 Compos
 			- var create_compo_url = basepath + 'compo/create'
 			a(href=create_compo_url) create a new compo 

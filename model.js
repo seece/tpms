@@ -1,38 +1,35 @@
-//var mongoose = require('mongoose')
-//	, Schema = mongoose.Schema
+var mongoose = require('mongoose')
+	, moment = require('moment');
 
-// Database schemas
-function defineModels(mongoose, fn) {
-	var Schema = mongoose.Schema,
-			ObjectId = Schema.ObjectId;
+var Schema = mongoose.Schema 
+, ObjectId = Schema.ObjectId;
 
-	Compo = new Schema({
-		name			: String,
-		created 	: { type: Date, default: Date.now},
-		deadline 	: { type: Date }
-	});
+var Entry = new Schema({
+	name : String,
+	  description : String,
+	  submitter : String,
+	  created : { type: Date, default: Date.now },
+	  fileurl : { type: String, default: "/404" }
 
-	Entry = new Schema({
-			name	: { type: String, max: 256 },
-			id		: Number,
-			format: String,
-			created: { type: Date, default: Date.now}
-			// needs an owner field...
-	});
+})
 
-	User = new Schema({
-		name			: { type: String, max: 64, index: {unique: true}},
-		joined		:	{ type: Date, default: Date.now},
-		group			:	String,
-		email			: String,
-		password	: String
-	});
+var Compo = new Schema({
+	name : String,
+	  description : String,
+	  created : { type: Date, default: Date.now },
+		deadline : { type: Date},	
+		creator : { type: String, default: "Anonymous", get: definitionChecker },
+	  entries: [Entry]
+})
 
-
-	mongoose.model('Compo', Compo);
-	mongoose.model('Entry', Entry);
-	mongoose.model('User', User);
-	fn();
+function definitionChecker(str) {
+	if (str === undefined) {
+		return "undefined";
+	} else {
+		return str;
+	}
 }
 
-exports.defineModels = defineModels;
+exports.schemas = {};
+exports.schemas.Compo = Compo;
+exports.schemas.Entry = Entry;

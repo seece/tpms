@@ -1,28 +1,28 @@
 var Log = require('log')
 	, log = new Log('DEBUG')
-	, mongoose = require('mongoose');
+	, mongoose = require('mongoose')
+	, model = require('./model')
+	, config = require('./config')
+	, moment = require('moment');
 
 var Schema = mongoose.Schema 
 	, ObjectId = Schema.ObjectId;
 
-var server_name = "localhost";
-var db_name = "tpms";
+var server_name = config.db.host;
+var db_name = config.db.database;
 
 var db = mongoose.connect('mongodb://'+server_name+'/'+db_name);
 log.debug('Connecting to MongoDB "' +db_name+ '" at ' + server_name);
 
 // Database schema
 //
-var Compo = new Schema({
-	name : String,
-	description : String
-});
 
-var compoModel = mongoose.model('Compo', Compo);
+var compoModel = mongoose.model('Compo', model.schemas.Compo);
+var entryModel = mongoose.model('Entry', model.schemas.Entry);
 
-var compoModelInstance = new compoModel();
-compoModelInstance.name = "kompo!";
-compoModelInstance.description= "the best compo";
+//var compoModelInstance = new compoModel();
+//compoModelInstance.name = "kompo!";
+//compoModelInstance.description= "the best compo";
 
 /*
 compoModelInstance.save(function (err) {
@@ -123,17 +123,39 @@ exports.createcompo = function (req, res) {
 
 		var componame = req.body.componame;
 		var description = req.body.description;
+		var username, date, time;
 
+		// We can support guests adding compos too
+		if (req.user === undefined) {
+			username = "Guest";
+		} else {
+			username = req.user.username;	
+		}
 
-		console.log(req.params);
+		//console.log(req.params);
 
 		if (componame === undefined) {
 			renderWithDefaults(req, res, 'main', {
 				errormessage: "ERROR: empty compo name"
 			});
 		} else {
-		// TODO: add the compo to the DB
+			//date = moment("
 
+			var c = new compoModel();
+			c.name = componame;
+			c.description = description;
+
+			c.save(function (err) {
+				if (err !== null) {
+					console.log(err);
+				} else {
+					console.log("Saved some stuff, at least according to mongoose.");
+				}
+			});
+
+			renderWithDefaults(req, res, 'main', {
+				success: "compo '" + componame + "' created successfully"
+			});
 		}
 	} else {
 		res.redirect('user/login');
@@ -143,8 +165,8 @@ exports.createcompo = function (req, res) {
 var compoList = function (fn) {
 	console.log("Compo list in action, sire");
 	compoModel.find({}, function (err, docs) {
-		console.log("ARGARVH: " + typeof(docs));
-		console.log(docs[0]);
+		//console.log("ARGARVH: " + typeof(docs));
+		//console.log(docs[0]);
 		//var temp = [ { name: "a", description: "b" } ];
 		fn(docs);
 	});
@@ -192,7 +214,14 @@ exports.compo = function (req, res) {
 		case "create":
 		// check if the user is logged in & admin
 		if (isAdmin(req, res)) {
-			renderWithDefaults(req, res, 'create_compo', {});
+			var now = moment();
+			var currentDate = now.format(config.time.dateformat);
+			var currentTime = now.format(config.time.timeformat);
+
+			renderWithDefaults(req, res, 'create_compo', {
+				date : currentDate,
+				time : currentTime
+			});
 			break;			
 		}
 
