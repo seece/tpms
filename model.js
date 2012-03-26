@@ -14,10 +14,10 @@ var Entry = new Schema({
 })
 
 var Compo = new Schema({
-	name : String,
-	  description : String,
-	  created : { type: Date, default: Date.now },
-		deadline : { type: Date},	
+		name : String,
+		description : String,
+	 	created : { type: Date, default: Date.now },
+		deadline : { type: Date },	
 		creator : { type: String, default: "Anonymous", get: definitionChecker },
 	  entries: [Entry]
 })

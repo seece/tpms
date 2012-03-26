@@ -48,7 +48,8 @@ var extend = function(obj, defaults_obj) {
 // TODO: Load these from config.json / config.js
 var defaults = {
 	title : "tpms",
-	basepath : "http://localhost:3000/"
+	basepath : "http://localhost:3000/",
+	timeformat : config.time.timeformat
 };
 
 // supplies basic settings to the template
@@ -95,10 +96,6 @@ function ensureAuthenticated(req, res, next) {
 	res.redirect('/user/login');
 };
 
-// TODO: Move this to a proper place
-String.prototype.trim = function () {
-	    return this.replace(/^\s*/, "").replace(/\s*$/, "");
-}
 
 exports.index = function (req, res) {
 
@@ -123,9 +120,10 @@ exports.createcompo = function (req, res) {
 
 		var componame = req.body.componame;
 		var description = req.body.description;
-		var username, date, time;
+		var username, date;
 
 		// We can support guests adding compos too
+		// but the admin check should be removed then
 		if (req.user === undefined) {
 			username = "Guest";
 		} else {
@@ -139,11 +137,12 @@ exports.createcompo = function (req, res) {
 				errormessage: "ERROR: empty compo name"
 			});
 		} else {
-			//date = moment("
+			date = moment(config.time.timeformat);
 
 			var c = new compoModel();
 			c.name = componame;
 			c.description = description;
+			//c.deadline = 
 
 			c.save(function (err) {
 				if (err !== null) {
@@ -215,7 +214,7 @@ exports.compo = function (req, res) {
 		// check if the user is logged in & admin
 		if (isAdmin(req, res)) {
 			var now = moment();
-			var currentDate = now.format(config.time.dateformat);
+			var currentDate = now.format(config.time.timeformat);
 			var currentTime = now.format(config.time.timeformat);
 
 			renderWithDefaults(req, res, 'create_compo', {

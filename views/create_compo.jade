@@ -10,16 +10,10 @@ form( name='createcompo', action='createcompo', method='post')
 	textarea(
 		name='description')
 	| <br />
-	label deadline date (DD-MM-YYYY):
+	label= "deadline date" + timeformat + " "
 	input(type='text',
 		name='date',
 		value=date) 
 	| <br />
-	label deadline time (HH:MM)
-	input(type='text',
-		name='time',
-		value=time) 
-	| <br />
-
 	input(type='submit',
 		value='create compo')
