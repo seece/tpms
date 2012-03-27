@@ -4,6 +4,7 @@ var express = require('express')
 , routes = require('./routes')
 , async = require('async')
 , mongoose = require('mongoose')
+, db = require('./db')
 , connect = require('connect')
 , Log = require('log')
 //, users = require('./users')
@@ -20,7 +21,7 @@ app.configure(function(){
 	app.use(express.cookieParser());
 	app.use(express.bodyParser());
 	app.use(express.methodOverride());
-	app.use(express.session({ secret: config.pms.secret }));
+	app.use(express.session({ secret: config.pms.secret  }));
 	app.use(passport.initialize());
 	app.use(passport.session());
 	app.use(app.router);
@@ -35,6 +36,8 @@ app.configure('development', function(){
 app.configure('production', function(){
 });
 
+// set up database
+mongoose.connect(config.db.host, config.db.database);
 
 app.get('/', function(req, res) {
 	//res.send('hai');
@@ -43,6 +46,8 @@ app.get('/', function(req, res) {
 });
 
 app.get('/compo/view/all', routes.listCompos);
+app.get('/compo/create', routes.compoForm);
+app.post('/compo/create', routes.createCompo);
 
 app.listen(3000);
 log.debug('started');

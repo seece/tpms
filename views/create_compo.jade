@@ -1,19 +1,22 @@
-h2 Create a new compo
-form( name='createcompo', action='createcompo', method='post') 
-	label compo name: 
-	input(type='text',
-		name='componame', 
-		autofocus)
-	| <br />
-	label description:
-	| <br />
-	textarea(
-		name='description')
-	| <br />
-	label= "deadline date" + timeformat + " "
-	input(type='text',
-		name='date',
-		value=date) 
-	| <br />
-	input(type='submit',
-		value='create compo')
+div.toolbox
+    h2 Create a new compo
+    form( name='createcompo', action=basepath+'compo/create', method='post') 
+        label compo name: 
+        input(type='text',
+            name='componame', 
+            autofocus)
+        | <br />
+        label description:
+        | <br />
+        textarea(
+            name='description')
+        | <br />
+        label= "deadline date (format: " + timeformat + "): "
+        | <br />
+        input(type='text',
+            name='date',
+            value=date) 
+        | <br />
+        | <br />
+        input.button(type='submit',
+            value='create compo')

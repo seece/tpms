@@ -21,3 +21,20 @@ The url format
 /admin/login		GET: show login form
 					POST: parse login data
 
+Mongoose stuff
+--------------
+
+Schemas / models are in db.js. You can access the models via db.model object and schemas via db.schema. To initialize the database you need to pass the mongoose object from the main app to the db.init -function, and it will create the models from the schemas and make them available via the db.model -object.
+
+Models are written with a Capital letter but schemas aren't.
+
+An example:
+
+//main.js
+var mongoose = require('mongoose')
+   ,db = require('./db');
+
+mongoose.connect('mongodb://localhost/my_database');
+db.init(mongoose, function (err) {
+	console.log('Great success!');
+});

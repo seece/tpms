@@ -1,12 +1,35 @@
+
 var Log = require('log')
 	, log = new Log('DEBUG')
-	, mongoose = require('mongoose');
+	, mongoose = require('mongoose')
+	;
 
-var server_name = "localhost";
-var db_name = "tpms";
+var self = this;
+var Schema = mongoose.Schema;
+ 
+var entry = new Schema({
+		name		: String,
+		created		: Date,
+		url			: String,
+		type		: String 	// audio, image, text, binary
 
-exports.init = function() {
-		var _db = mongoose.connect('mongodb://'+server_name+'/'+db_name);
-		log.debug('Connecting to MongoDB "' +db_name+ '" at ' + server_name);
-		return _db;
-}
+});
+
+var compo = new Schema({
+		name 		: String,
+		description : String,
+		deadline 	: Date,
+		entries		: [entry]
+});
+
+
+exports.model = {};
+
+exports.init = function (mongoose, fn) {
+	exports.model.Compo = mongoose.model('Compo', exports.schema.compo);
+
+	// no errors, setup successfull
+	fn(null);
+};
+
+
