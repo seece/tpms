@@ -1,5 +1,5 @@
 body {
-	background-color:#333;
+	background-color:#282828;
 	color:#FFF;
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
@@ -8,12 +8,39 @@ body {
   margin-right:auto;
 }
 
+h2 {
+
+}
+
 a {
   color: #00B7FF;
 }
 
+#centrum {
+	box-shadow: 0px 4px 5px #181818;
+	padding-bottom:0px;
+	margin-bottom:0px;
+}
+
+#content {
+	background-color:#333;
+	padding:15px;
+	padding-bottom:15px;
+}
+
 #footer {
-	color: #888888;
+	background-color:#292936;
+	color: #446;
+	padding:0px;
+	margin:0px;
+	padding-top:4px;
+	padding-left:5px;
+	height:22px;
+}
+
+.tight {
+	padding:0px;
+	display:inline;
 }
 
 #loginbox {
@@ -59,6 +86,7 @@ a {
 #bigtitle {
 	color: #FFFFFF;
 	text-decoration:none;
+	text-shadow: 0px 2px 2px #181818;
 }
 
 #bigtitle:hover {
