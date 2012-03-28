@@ -1,18 +1,35 @@
 - var magic = basepath;
 
 if logged_in == true
-	- var logout_url = basepath + 'user/logout'
-	div#loginbox
-		span#username logged in as #{username} 
-		| | 
-		a(href=logout_url) logout
+    - var logout_url = basepath + 'user/logout'
+    div#loginbox
+        span#username logged in as #{username} 
+        | | 
+        a(href=logout_url) logout
 else
-	- var login_url = basepath + 'user/login'
-	- var register_url = basepath + 'user/register'
-	div#loginbox
-		a(href=login_url) login
-		|  |
-		a(href=register_url) register 
+    - var login_url = basepath + 'user/login'
+    - var register_url = basepath + 'user/register'
+    div#loginbox
+        a(href=login_url) login
+        |  |
+        a(href=register_url) register 
 
 h1
-	a(href=basepath)#bigtitle the party management system
+    a(href=basepath)#bigtitle the party management system
+
+mixin showAlert(alerts)
+    for alert in alerts
+        div #{alert}
+
+- if (flash.info)
+    div.notice.alert-blue
+        mixin showAlert(flash.info)
+
+- if (flash.success)
+    div.notice.notice-green
+        mixin showAlert(flash.success)
+
+- if (flash.error)
+    div.notice.notice-red
+        mixin showAlert(flash.error)
+

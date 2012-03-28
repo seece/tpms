@@ -1,0 +1,21 @@
+div.toolbox
+    h2= 'Submitting entry to ' + componame
+    form( name='createcompo', action=basepath+'entry/submit/'+componame, method='post') 
+        label entry name: 
+        input(type='text',
+            name='entryname', 
+            autofocus)
+        | <br />
+        label your nickname:
+        input(type='text',
+            name='entryname', 
+            autofocus)
+        | <br />
+        label description (show on the screen):
+        | <br />
+        textarea(
+            name='description')
+        | <br />
+        | <br />
+        input.button(type='submit',
+            value='submit entry!')

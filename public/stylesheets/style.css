@@ -27,8 +27,10 @@ a {
 
 ul.menu {
 	list-style:none;
-	margin-top:-15px;
+	margin-top:0px;
+	margin-bottom:25px;
 	padding:0px;
+
 }
 
 li {
@@ -67,18 +69,13 @@ input.button {
 	border: 1px solid #777;
 	padding:5px;
 }
-
-.itembox {
-	border: 1px solid black;
-}
-
 .notice {
 	padding:5px;
 	border: 1px solid #777;
+	margin-bottom:10px;
 	border-right: 1px solid #555;
 	border-bottom: 1px solid #555;
 	box-shadow: 0px 4px 5px #111;
-	background-color:#433;
 }
 
 .notice:hover {
@@ -96,9 +93,17 @@ input.button {
 	box-shadow: 0px 4px 3px #111;
 }
 
-.green {
+.notice-green {
 
 		background-color:#343;
+}
+
+.notice-red{
+	background-color:#433;
+}
+
+.notice-blue{
+	background-color:#334;
 }
 
 #bigtitle {
@@ -115,7 +120,7 @@ input.button {
 .toolbox {
 	background-color:#222;
 	padding:15px;
-	padding-top:3px;
+	padding-top:8px;
 	box-shadow:inset 0 5px 10px #111;
 	border-right: 1px solid #555;
 	border-bottom: 1px solid #555;
@@ -123,3 +128,98 @@ input.button {
 	margin-bottom:5px;
 }
 
+
+.compobox {
+	border-top: 1px solid #777;	
+	display: block;
+	text-decoration:none;
+	margin-top:6px;
+	margin-bottom:9px;
+	color:#eee;
+	background-color:#444;
+	padding:5px;
+	height:50px;
+	box-shadow: 0px 2px 2px #101010;
+}
+
+.compobox:hover {
+	background-color:#555;
+}
+
+
+a.submitentry {
+	float:right;
+}
+
+span.entries {
+	position:relative;
+	color:#111;
+	top:12px;
+	left:20px;
+}
+
+span.timeleft {
+	color:#666;
+	float: right;
+	position:relative;
+	margin-right:10px;
+}
+
+span.countdown {
+	color:#fff;
+	font-weight:bold;
+	top:2px;
+	position:relative;
+}
+
+
+
+div.componame {
+	height:18px;
+}
+
+.compotitle {
+	position:relative;
+	font-size:26px;
+	padding-left:9px;
+	text-shadow: 0px -1px 0px #222,
+				0px 1px 0px #666;
+}
+
+
+.iconwrap {
+	border-radius:2px;
+	background-color:#333;
+	width:16px;
+	height:16px;
+	margin:5px;
+	padding:2px;
+	float:left;
+	position:relative;
+	top:5px;
+}
+.icon {
+	width:16px;
+	height:16px;
+	background-color:#000;
+	position:relative;
+	float:left;
+	position:relative;
+	background:none no-repeat left center;
+	background-image: url("/images/icons.png");
+}
+
+.icon-audio {
+	background-position: -0px 0px;
+}
+
+.icon-image {
+	background-position: -16px 0px;
+}
+
+.icon-binary {
+	background-position: -32px 0px;
+}
+.icon-any {
+	background-position: -48px 0px;
+}

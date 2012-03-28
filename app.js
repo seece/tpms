@@ -3,12 +3,11 @@ var express = require('express')
 , passport = require('passport')
 , routes = require('./routes')
 , async = require('async')
-, mongoose = require('mongoose')
-, db = require('./db')
+//, db = require('./db')
 , connect = require('connect')
 , Log = require('log')
 //, users = require('./users')
-, Schema = mongoose.Schema
+//, Schema = mongoose.Schema
 , config = require('./config')
 , LocalStrategy = require('passport-local').Strategy
 , log = new Log('DEBUG');
@@ -36,8 +35,11 @@ app.configure('development', function(){
 app.configure('production', function(){
 });
 
-// set up database
-mongoose.connect(config.db.host, config.db.database);
+app.dynamicHelpers({
+	flash : function (req, res) {
+		return req.flash();
+	}
+});
 
 app.get('/', function(req, res) {
 	//res.send('hai');
@@ -46,8 +48,13 @@ app.get('/', function(req, res) {
 });
 
 app.get('/compo/view/all', routes.listCompos);
+app.get('/compo/view/:componame', routes.viewCompo);
 app.get('/compo/create', routes.compoForm);
 app.post('/compo/create', routes.createCompo);
+
+app.get('/entry/submit/:componame', routes.entryForm);
+app.post('/entry/submit/:componame', routes.submitEntry);
+app.get('/entry/view/:entryname', routes.viewEntry);
 
 app.listen(3000);
 log.debug('started');

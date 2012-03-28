@@ -12,11 +12,11 @@ The url format
 --------------
 
 /					redirect to /compo/view/all
-/compo/view/:id
+/compo/view/:componame
 /compo/view/all 	the default view
 /compo/create/ 		GET: the compo submit form
 					POST: parse compo submit data
-/entry/view/:id		view single entry
+/entry/view/:componame/:entryname		view single entry
 /entry/submit		entry submit form
 /admin/login		GET: show login form
 					POST: parse login data
@@ -24,7 +24,7 @@ The url format
 Mongoose stuff
 --------------
 
-Schemas / models are in db.js. You can access the models via db.model object and schemas via db.schema. To initialize the database you need to pass the mongoose object from the main app to the db.init -function, and it will create the models from the schemas and make them available via the db.model -object.
+Schemas/models are in db.js. You can access the models via db.model object. To initialize the database you need to pass the mongoose object from the main app to the db.init -function, and it will create the models from the schemas and make them available via the db.model -object.
 
 Models are written with a Capital letter but schemas aren't.
 

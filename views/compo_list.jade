@@ -1,8 +1,35 @@
-h2= "All compos." 
-p They R listed here. 
-- each item, i in compos
-	div.itembox
-		h3= item.name
-		p= item.description
-		p= "started by: " + item.creator
 
+mixin listcompos(ended)
+    - each item, i in compos
+        if (item.ended === ended)
+            a.compobox(href=basepath + 'compo/view/' + item.encoded_name)
+                if (item.ended === false)
+                    span.timeleft ends in 
+                        | <br />                
+                        span.countdown=item.countdown
+                if (item.ended === true)
+                    span.timeleft ended 
+                        | <br />                
+                        span.countdown=item.clean_deadline + ' ago'
+                div.componame
+                    div.iconwrap
+                        - if (item.format === 'any')
+                            div.icon.icon-any
+                        - if (item.format === 'image')
+                            div.icon.icon-image
+                        - if (item.format === 'audio')
+                            div.icon.icon-audio
+                        - if (item.format === 'binary')
+                            div.icon.icon-binary
+                    span.compotitle= item.name
+                span.entries= 'entries: ' + item.entryamount
+                | <br />
+                - each entry, e in item.entries 
+                    div.entrybox
+                        p= entry.name
+
+div.toolbox
+    h3 Compos running
+    mixin listcompos(false)
+    h3 Closed compos
+    mixin listcompos(true)
