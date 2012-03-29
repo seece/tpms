@@ -5,7 +5,6 @@ var Log = require('log')
 	, mongoose = require('mongoose')
 	, filetypes = require('./filetypes')
 	, db = require('./db')
-	, format = require('./lib/sprintf-0.7-beta1.js')
 	, fs = require('fs')
 	;
 
@@ -49,7 +48,8 @@ var render = function (req, res, view, params) {
 		timeformat : config.time.timeformat,
 		success : false,
 		errormessage : false,
-		admin : false
+		admin : false,
+		config : config
 	};
 
 	if (params === undefined) {
@@ -93,7 +93,7 @@ var prettifyDuration = function (diff)  {
 	var hours = Math.round((diff % (24*60*60*1000)) / (60*60*1000));
 	var minutes = Math.round((diff % (60*60*1000)) / (60*1000));
 	var seconds = Math.round((diff % (60*1000)) / (1000));
-	var days_string = days > 0 ? days + " days" : "";
+	var days_string = days > 0 ? days + " days " : "";
 	return days_string+hours+"h " + minutes + "m " + seconds + "s";
 }
 
@@ -284,11 +284,14 @@ exports.submitEntry = function (req, res) {
 					old_entries = doc.entries;
 
 					var query = { name : componame };
+					var filename = req.files.file.name;
+					filename = config.pms.name_prefix_in_uploads ? nickname +'_-_' + filename : filename;
 
 					var newEntry = new db.model.Entry();
 					newEntry.name = entryname;
 					newEntry.owner = nickname;
 					newEntry.description = description;
+					newEntry.filename = filename;
 
 					var new_entry_list = old_entries;
 					old_entries.push(newEntry);
@@ -306,8 +309,7 @@ exports.submitEntry = function (req, res) {
 
 									var fileBuffer = fs.readFileSync(req.files.file.path);
 									var compo_dir = doc.directory_name;
-									var filename = req.files.file.name;
-									filename = config.pms.name_prefix_in_uploads ? nickname +'_-_' + filename : filename;
+
 									var writePath = config.pms.upload_dir + compo_dir + '\\' + filename;
 									if (doc.directory_name) {
 										var jea = doc.directory_name;

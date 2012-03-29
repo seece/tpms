@@ -5,7 +5,12 @@ a(href=basepath+'entry/submit/'+compo.encoded_name) submit entry
 
 
 // this could be ul, but the styles need to adjusted
+| <br \>
+
+- var rootdir=basepath+'uploads/'+ '' + compo.directory_name;
+
 div.entrylist
 	- each entry, i in compo.entries
-		p= entry.name + ' by ' + entry.owner
+		div.entry
+			a(href=rootdir+'/'+entry.filename)=entry.name + ' by ' + entry.owner
 
