@@ -1,11 +1,13 @@
 
 var Log = require('log')
 	, config = require('./config')
+	, passport = require('passport')
 	, moment = require('moment')
 	, mongoose = require('mongoose')
 	, filetypes = require('./filetypes')
 	, db = require('./db')
 	, fs = require('fs')
+	, users = require('./users')
 	;
 
 var log = new Log();
@@ -93,10 +95,10 @@ var compoExists = function(componame, success, fail) {
 
 // takes in millisecs
 var prettifyDuration = function (diff)  {
-	var days = Math.round(diff / (24*60*60*1000));
-	var hours = Math.round((diff % (24*60*60*1000)) / (60*60*1000));
-	var minutes = Math.round((diff % (60*60*1000)) / (60*1000));
-	var seconds = Math.round((diff % (60*1000)) / (1000));
+	var days = Math.floor(diff / (24*60*60*1000));
+	var hours = Math.floor((diff % (24*60*60*1000)) / (60*60*1000));
+	var minutes = Math.floor((diff % (60*60*1000)) / (60*1000));
+	var seconds = Math.floor((diff % (60*1000)) / (1000));
 	var days_string = days > 0 ? days + " days " : "";
 	return days_string+hours+"h " + minutes + "m " + seconds + "s";
 }
@@ -158,9 +160,16 @@ exports.listCompos = function (req, res, obj) {
 				//console.log(docs[i]);
 			}
 
-			// from ScheduleBot
 			docs.sort(function (a, b) {
-				return -moment(a.deadline).diff(Date.now()) - moment(b.deadline).diff(Date.now());
+				if (a.ended && b.ended)
+					return b.diff - a.diff;
+				if (!a.ended && !b.ended)
+					return a.diff - b.diff
+				if (a.ended && !b.ended)
+					return -1;
+				if (!a.ended && b.ended)
+					return 1;
+				return 0;
 			});
 
 			render(req, res, 'compo_list', { 
@@ -378,3 +387,5 @@ exports.userLogin = function (req, res) {
 	var username = req.body.username;	
 	var password = req.body.password;	
 }
+
+

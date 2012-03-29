@@ -14,6 +14,12 @@
 
 	},
 
+	"limit" : {
+		"componame" : 50,
+		"description" : 2500,
+		"username" : 32
+	},
+
 	"db" : {
 		"host"		: "localhost",
 		"database": "tpms"

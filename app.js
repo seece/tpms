@@ -6,13 +6,52 @@ var express = require('express')
 //, db = require('./db')
 , connect = require('connect')
 , Log = require('log')
-//, users = require('./users')
+, users = require('./users')
 //, Schema = mongoose.Schema
 , config = require('./config')
 , LocalStrategy = require('passport-local').Strategy
 , log = new Log('DEBUG');
 
 var app = express.createServer();
+
+passport.use(new LocalStrategy(
+			function (username, password, done) {
+				log.debug("%s %s",username, password);
+
+				if (users.db[username]) {
+					log.debug("lol");
+					if (users.db[username].password === password) {
+						return done(null, users.db[username]);
+					}
+				}
+
+				return done(null, false);
+			}
+		));
+
+var findUser = function (id, fn) {
+	for (var u in users.db) {
+		console.log(u);
+		if (id === users.db[u].id) {
+
+			var b =  users.db[u];
+			log.debug("calling with " );
+			console.log(users.db[u]);
+			fn(null, users.db[u]);
+		}
+
+	}
+};
+
+passport.serializeUser(function(user, done) {
+	  done(null, user.id);
+});
+
+passport.deserializeUser(function(id, done) {
+	  findUser(id, function (err, user) {
+		      done(err, user);
+			    });
+});
 
 app.configure(function(){
 	app.set('views', __dirname + '/views');
@@ -46,6 +85,14 @@ app.get('/', function(req, res) {
 //	res.redirect('/compo/view/all');
 	routes.listCompos(req, res);
 });
+
+app.get('/user/login/', routes.loginForm);
+app.get('/user/login', routes.loginForm);
+app.post('/user/login', 
+		passport.authenticate('local', { 	successRedirect: '/',
+											failureRedirect: '/user/login',
+											failureFlash: true
+		}));
 
 app.get('/compo/view/all', routes.listCompos);
 app.get('/compo/view/:componame', routes.viewCompo);
