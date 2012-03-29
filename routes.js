@@ -251,10 +251,7 @@ exports.submitEntry = function (req, res) {
 	db.model.Compo.findOne({name:componame}, {}, {},
 			function (err, doc) {
 				console.log(err);
-//				console.log(doc);
 				if (!err) {
-					//console.log(doc.entries);
-
 					old_entries = doc.entries;
 
 					var query = { name : componame };
@@ -267,20 +264,17 @@ exports.submitEntry = function (req, res) {
 					var new_entry_list = old_entries;
 					old_entries.push(newEntry);
 
-					console.log(doc.entries);
-					console.log('----');
-					console.log(new_entry_list);
-
 					db.model.Compo.update(query, { entries : new_entry_list }, {}, 
 							function (err, numAffected) {
 								if (!err) {
-									//log.debug(numAffected);	
 
 									req.flash('success', "Entry '"+entryname+"' submitted successfully!");
 									res.redirect('/');
 								} else {
-										log.error(err);	
 									// an error occured
+									log.error(err);	
+									req.flash('error', "Mongoose error: " + err);
+									render(req, res, '404', {});
 								}
 							});
 
