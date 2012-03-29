@@ -1,13 +1,14 @@
 !!! 5
 html
-    head
-        title= title
-        link(rel='stylesheet', href=basepath + '/stylesheets/style.css')
-        script(type='text/javascript', src=basepath + 'javascripts/jquery-1.7.1.min.js')
-    body
-        div#centrum
-            div#content 
-                include include/header
-                include include/menu
-                != body
-            include include/footer
+	head
+		title= title
+		link(rel='stylesheet', href=basepath + '/stylesheets/style.css')
+		script(type='text/javascript', src=basepath + 'javascripts/jquery-1.7.1.min.js')
+		link(rel='stylesheet', href=basepath + '/stylesheets/jquery-ui-1.8.18.custom.css')
+	body
+		div#centrum
+			div#content
+				include include/header
+				include include/menu
+				!= body
+			include include/footer

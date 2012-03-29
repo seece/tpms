@@ -1,24 +1,24 @@
 div.toolbox
-    h2= 'Submitting entry to ' 
-        a(href=basepath+'compo/view/'+encodeURIComponent(componame))= componame
-    form( name='createcompo', action=basepath+'entry/submit/'+componame, method='post', enctype='multipart/form-data') 
-        label file: 
-        input(type='file', name='file')
-        | <br />
-        label entry name: 
-        input(type='text',
-            name='entryname', 
-            autofocus)
-        | <br />
-        label your nickname:
-        input(type='text',
-            name='nickname')
-        | <br />
-        label description (show on the screen):
-        | <br />
-        textarea(
-            name='description')
-        | <br />
-        | <br />
-        input.button(type='submit',
-            value='submit entry!')
+	h2= 'Submitting entry to '
+		a(href=basepath+'compo/view/'+encodeURIComponent(componame))= componame
+	form(name='createcompo', action=basepath+'entry/submit/'+componame, method='post', enctype='multipart/form-data')
+		.single
+			label(for="file") file:
+			input#file(type='file', name='file')
+		.single
+			label(for="entryname") entry name:
+			input#entryname(type='text',
+				name='entryname',
+				autofocus)
+		.single
+			label(for="nickname") your nickname:
+			input#nickname(type='text',
+				name='nickname',
+				autofocus)
+		.single
+			label(for="description") description (show on the screen):
+			textarea#description(
+				name='description')
+		.single.submit
+			input.button(type='submit',
+				value='submit entry!')

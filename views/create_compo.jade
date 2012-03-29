@@ -1,30 +1,37 @@
 div.toolbox
-    h2 Create a new compo
-    form( name='createcompo', action=basepath+'compo/create', method='post') 
-        label compo name: 
-        input(type='text',
-            name='componame', 
-            autofocus)
-        | <br />
-        label entry format: 
-        select(name='format')
-            option(value='any') any format
-            option(value='image') image
-            option(value='audio') audio 
-            option(value='binary') binary
-        
-        | <br />
-        label description:
-        | <br />
-        textarea(
-            name='description')
-        | <br />
-        label= "deadline date (format: " + timeformat + "): "
-        | <br />
-        input(type='text',
-            name='date',
-            value=date) 
-        | <br />
-        | <br />
-        input.button(type='submit',
-            value='create compo')
+	h2 Create a new compo
+	form( name='createcompo', action=basepath+'compo/create', method='post')
+		.single
+			label(for="componame") compo name:
+			input#componame(type='text',
+				name='componame',
+				autofocus)
+		.single
+			label(for="format") entry format:
+			select#format(name='format')
+				option(value='any') any format
+				option(value='image') image
+				option(value='audio') audio
+				option(value='binary') binary
+
+		.single
+			label(for="description") description:
+			textarea#description(
+				name='description')
+		.single
+			label(for="time") deadline time:
+			input#time(type='text',
+				name='time',
+				placeholder='HH:mm')
+			// span= "format: " + timeformat
+			span format: HH:mm
+		.single
+			label(for="date") deadline date:
+			input#date(type='text',
+				name='date',
+				placeholder='YYYY-MM-DD')
+			// span= "format: " + timeformat
+			span format: YYYY-MM-DD
+		.single.submit
+			input.button(type='submit',
+				value='create compo')
