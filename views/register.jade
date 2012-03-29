@@ -1,26 +1,28 @@
 h2 Register
 
 if logged_in == true
-	h2= "You have already registered!"	
+	h2= "You have already registered!"
 	p Multiple accounts are strictly prohibited, and will not be tolerated. Thank you for your co-operation. We will inform the relevant officials of your actions.
-	
-	a(href="/") go back to index 
+
+	a(href="/") go back to index
 else
 	form( name='registration', action='register', method='post')
-		label Your desired username:
+		.single
+			label Your desired username:
 
-		// inline html to add the autofocus attribute
-		| <input type="text" name="username" autofocus />
-		| <br />
-		label Email (optional):
-		input(type='text', name='email')
-		| <br />
-		label Password:
+			// inline html to add the autofocus attribute
+			| <input type="text" name="username" autofocus />
 
-		input(type='password',
-			name='password')
+		.single
+			label Email (optional):
+			input(type='text', name='email')
 
-		| <br />
+		.single
+			label Password:
 
-		input(type='submit',
-			value='Register')
+			input(type='password',
+				name='password')
+
+		.single
+			input(type='submit',
+				value='Register')

@@ -223,3 +223,31 @@ div.componame {
 .icon-any {
 	background-position: -48px 0px;
 }
+
+
+/** Forms */
+.single {
+	margin: 0.5em 0;
+}
+label {
+	display: inline-block;
+	width: 125px;
+	text-align: right;
+	padding-right: 10px;
+	padding-top: 0.25em;
+	vertical-align: top;
+    cursor: pointer;
+}
+input, textarea {
+	width: 200px;
+	padding: 2px;
+	display: inline-block;
+    margin-right: 10px;
+}
+.submit input {
+    width: 125px;
+    margin-left: 134px;
+}
+textarea {
+	height: 5em;
+}
