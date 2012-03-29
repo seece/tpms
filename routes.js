@@ -163,7 +163,7 @@ exports.compoForm = function (req, res) {
 	});
 };
 
-// something fishy here
+
 exports.createCompo = function (req, res) {
 	if (isAdmin(req, res)) {
 		log.debug('Creating a new compo.');
@@ -234,98 +234,65 @@ exports.entryForm = function (req, res) {
 		}, 
 		// on fail
 		function () {
-			render(req, res, '404', {errormessage:"Invalid competition name"});
+			req.flash('error', 'Invalid competition name.');
+			render(req, res, '404', {});
 		});
 
 }
 
 exports.submitEntry = function (req, res) {
-	log.debug('Someone trying to submit entry...');
-	compoExists(req.params.componame, function (compo) {
+	var componame = req.params.componame;
+	log.debug('Someone submitting entry to ' + componame);
+	var entryname = req.body.entryname;
+	var nickname = req.body.nickname;
+	var description = req.body.description;
+	var old_entries;
 
-		log.debug('Entry named %s seems to exist.', compo.name);
-		var entry = new db.model.Entry();
-		entry.name = req.body.entryname;
-		entry.description= req.body.description;
-		
-		//entry.format = compo.format; // we'll deduce the format from the filename
-		entry.owner = req.body.nickname;
+	db.model.Compo.findOne({name:componame}, {}, {},
+			function (err, doc) {
+				console.log(err);
+//				console.log(doc);
+				if (!err) {
+					//console.log(doc.entries);
 
-		//console.log(compo.entries);
-		//console.log(entry);
-		//compo.entries.add(entry);
+					old_entries = doc.entries;
 
-		var new_entries = compo.entries;
-		new_entries.push(entry);
-		
-		var c = db.model.Compo;
-		//var c = mongoose.model('Compo');
-		var query = { name: compo.name }; // conditions
-		//var update = compo.entries;
-		var update = { entries : compo.entries };
-		//update.add(
-		var options = {};
+					var query = { name : componame };
 
-		// ADD SAVE HERE
+					var newEntry = new db.model.Entry();
+					newEntry.name = entryname;
+					newEntry.owner = nickname;
+					newEntry.description = description;
 
-		/*
-		//c.markModified('entries');
-		db.model.Compo.findOne(query, function (err, item) {
-			if (item) {
-				console.log(item);
-				//item.entries = new_entries;
-				console.log(item);
-				console.log('ITEM TYPE: %s', typeof(item));
+					var new_entry_list = old_entries;
+					old_entries.push(newEntry);
 
-				console.log(item.id);
-				item.entries.push(entry);
+					console.log(doc.entries);
+					console.log('----');
+					console.log(new_entry_list);
 
-				item.save(function (err) {
-					if (!err) {
-						log.debug('Entry added successfully.');
-					} else {
-						// errorz!
-						log.error("Mongoose couldn't save entry: " + err);
-					}
-				});
+					db.model.Compo.update(query, { entries : new_entry_list }, {}, 
+							function (err, numAffected) {
+								if (!err) {
+									//log.debug(numAffected);	
+
+									req.flash('success', "Entry '"+entryname+"' submitted successfully!");
+									res.redirect('/');
+								} else {
+										log.error(err);	
+									// an error occured
+								}
+							});
+
+				} else {
+
+				}
 
 			}
-		});
-		*/
-
-		/*
-		c.update(query, update, options, 
-				function (err, docs) {
-					if (err === null) {
-						log.debug("Entry '%s' added to the compo '%s'", entry.name, compo.name); 
-
-						req.flash('success', "Entry '"+entry.name+"' submitted successfully.");
-						render(req, res, 'compo', {
-							compo : compo,
-						});
-					} else {
-						req.flash('error', "Submission error: " + err.toString());
-						render(req, res, 'entryform', {
-							componame: compo.name 
-						});
-					}
-		},
-		function (err) {
-				log.error('Submission failed: ' + err.toString());
-				req.flash('error', 'Submission error: '+ err.toString());
-
-				render(req, res, 'entryform', {
-					componame: compo.name 
-		});
-		}); */
+			);
 
 
-	},
-	function () {
-			log.debug('Submission failored.');
-			req.flash('error', "Invalid competition name");
-			render(req, res, '404', {});
-	});
+	
 }
 
 exports.viewCompo = function (req, res) {

@@ -18,9 +18,9 @@ var entry = new Schema({
 });
 
 var compo = new Schema({
-		name 		: String,
+		name 		: { type : String, required : true },
 		description : String,
-		deadline 	: Date,
+		deadline 	: { type : Date, required : true },
 		entries		: [entry],
 		format		: String
 });
@@ -38,7 +38,7 @@ exports.init = function (mongoose, fn) {
 	exports.model.Entry = mongoose.model('Entry', entry);
 	exports.model.Compo = mongoose.model('Compo', compo);
 
-	// no errors, setup successfull
+	// no errors, setup successful
 	fn(null);
 };
 

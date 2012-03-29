@@ -1,7 +1,10 @@
 div.toolbox
 	h2= 'Submitting entry to '
 		a(href=basepath+'compo/view/'+encodeURIComponent(componame))= componame
-	form( name='createcompo', action=basepath+'entry/submit/'+componame, method='post')
+	form(name='createcompo', action=basepath+'entry/submit/'+componame, method='post', enctype='multipart/form-data')
+		.single
+			label(for="file") file:
+			input#file(type='file', name='file')
 		.single
 			label(for="entryname") entry name:
 			input#entryname(type='text',
