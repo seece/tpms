@@ -13,12 +13,13 @@ var entry = new Schema({
 		downloads	: Number, 
 		description : { type : String, default: ""},
 		created		: { type : Date, default: Date.now },
-		url			: String
-
+		// file has to be found from /uploads/componame/filename
+		filename	: { type : String, required : true}
 });
 
 var compo = new Schema({
 		name 		: { type : String, required : true },
+		directory_name : { type : String, required : true },
 		description : String,
 		deadline 	: { type : Date, required : true },
 		entries		: [entry],

@@ -8,7 +8,9 @@
 			"username" : "guest"
 		},
 
-		"secret" : "09sav80dXp_q2"
+		"secret" : "09sav80dXp_q2",
+		"upload_dir" : "./public/uploads/",
+		"name_prefix_in_uploads" : true
 
 	},
 

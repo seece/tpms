@@ -5,6 +5,8 @@ var Log = require('log')
 	, mongoose = require('mongoose')
 	, filetypes = require('./filetypes')
 	, db = require('./db')
+	, format = require('./lib/sprintf-0.7-beta1.js')
+	, fs = require('fs')
 	;
 
 var log = new Log();
@@ -85,17 +87,29 @@ var compoExists = function(componame, success, fail) {
 
 };
 
+// takes in millisecs
 var prettifyDuration = function (diff)  {
 	var days = Math.round(diff / (24*60*60*1000));
 	var hours = Math.round((diff % (24*60*60*1000)) / (60*60*1000));
 	var minutes = Math.round((diff % (60*60*1000)) / (60*1000));
 	var seconds = Math.round((diff % (60*1000)) / (1000));
-
 	var days_string = days > 0 ? days + " days" : "";
-
 	return days_string+hours+"h " + minutes + "m " + seconds + "s";
-	
 }
+
+// trims and replaces non alphabetical characters with substitutes
+var makeDirname = function (name) {
+	name = name.substr(0, 255);
+	name = name.replace(/^ */g, "");
+	name = name.replace(/ *$/g, "");
+	name = name.replace(/[,\.\/\\()]/g, "");
+	name = name.replace(/ /g, "_");
+	name = name.replace(/[^A-Za-z_0-9]/g, "");
+	name = name.replace(/_{2,}/g, "_"); // no long lines of underscores
+	return name;
+};
+
+//console.log(trimCompoName( "   ,. 22    1)sa)naX[] } {{  /a/b.trw   ") + '|');
 
 // route exports
 
@@ -163,65 +177,77 @@ exports.compoForm = function (req, res) {
 	});
 };
 
-
 exports.createCompo = function (req, res) {
 	if (isAdmin(req, res)) {
 		log.debug('Creating a new compo.');
 
 		//console.log(req.body);
 
-		var componame = req.body.componame;
+		var componame = decodeURIComponent(req.body.componame);
+		var dirname = makeDirname(componame);
 
-		compoExists(componame, function (compo) {
-			//log.debug('Name collision in compo creation.');
-			req.flash('error', 'There is already a compo with the name ' + compo.name);
-		
-			exports.compoForm(req, res);
-		},
+		db.model.Compo.find({
+				directory_name : dirname  
+		}, function (err, docs) {
 
-		// if there isn't a compo with this name, continue
-		function (err) {
+			if (docs.length > 0) {
+				// submission failed, match found
+				var compo = docs[0];
+				req.flash('error', 'There is already a compo with the name ' + compo.name);
+				exports.compoForm(req, res);
 
-			var description = req.body.description;
-			var format = req.body.format;
-			var end_time = req.body.date; 
-			var username, deadline;
-
-			//console.log(req.body);
-
-			if (componame === undefined || componame === '' | componame === 'all') {
-				req.flash('error', "Invalid compo name");
-				render(req, res, 'main', {});
 			} else {
+				// compo name is unique, continue
 
-				date = moment(config.time.timeformat);
-				// add some html -tag stripping
-				var compo = new db.model.Compo();
-				compo.name = componame;
-				compo.description = description;
-				deadline = moment(end_time, config.time.timeformat);
-				compo.deadline = deadline;
-				compo.format = format;
+				var description = req.body.description;
+				var format = req.body.format;
+				var end_time = req.body.date + ' ' + req.body.time; 
+				var username, deadline;
 
-				console.log(compo);
+				//console.log(req.body);
 
-				compo.save(function (err) {
-					if (err !== null) {
-						console.log(err);
-						req.flash('error', "Couldn't save compo! Blame stupid mongoose. Error: " + err.toString());
+				if (componame === undefined || componame === '' | componame === 'all') {
+					req.flash('error', "Invalid compo name");
+					render(req, res, 'main', {});
+				} else {
 
-						render(req, res, 'main', {});
+					date = moment(config.time.timeformat);
+					// add some html -tag stripping
+					var compo = new db.model.Compo();
+					compo.name = componame;
+					compo.description = description;
+					deadline = moment(end_time, config.time.timeformat);
+					compo.deadline = deadline;
+					compo.format = format;
+					compo.directory_name = dirname;
 
-					} else {
-						log.debug("Saved some stuff, at least according to mongoose.");
-						req.flash('success', "compo '" + componame + "' created successfully");
+					fs.mkdirSync(config.pms.upload_dir + dirname, 0777);
+					log.info('Created a new directory:' + config.pms.upload_dir + dirname);
 
-						render(req, res, 'main', {});
-					}
-				});
+					//console.log(compo);
+
+					compo.save(function (err) {
+						if (err !== null) {
+							console.log(err);
+							req.flash('error', "Couldn't save compo! Blame stupid mongoose. Error: " + err.toString());
+
+							render(req, res, 'main', {});
+
+						} else {
+							log.debug("Saved some stuff, at least according to mongoose.");
+							req.flash('success', "compo '" + componame + "' created successfully");
+
+							render(req, res, 'main', {});
+						}
+					});
+
+				}
 
 			}
-		})
+		});
+
+	} else {
+		// error! only admin can create compos
 	}
 }
 
@@ -241,6 +267,9 @@ exports.entryForm = function (req, res) {
 }
 
 exports.submitEntry = function (req, res) {
+	// recieve the file, handle the parameters and add an entry to the db
+
+	
 	var componame = req.params.componame;
 	log.debug('Someone submitting entry to ' + componame);
 	var entryname = req.body.entryname;
@@ -268,6 +297,25 @@ exports.submitEntry = function (req, res) {
 							function (err, numAffected) {
 								if (!err) {
 
+									// database update successful, now move the file
+									log.debug('uploaded %s (%s Kb) to %s as %s'
+												, req.files.file.name
+												, req.files.file.size / 1024 | 0 
+												, req.files.file.path
+												, req.body.entryname);
+
+									var fileBuffer = fs.readFileSync(req.files.file.path);
+									var compo_dir = doc.directory_name;
+									var filename = req.files.file.name;
+									filename = config.pms.name_prefix_in_uploads ? nickname +'_-_' + filename : filename;
+									var writePath = config.pms.upload_dir + compo_dir + '\\' + filename;
+									if (doc.directory_name) {
+										var jea = doc.directory_name;
+										fs.writeFileSync(config.pms.upload_dir + jea + '/' + filename, fileBuffer);
+									} else {
+										log.error("Empty directory name in %s!", doc.name);
+									}
+
 									req.flash('success', "Entry '"+entryname+"' submitted successfully!");
 									res.redirect('/');
 								} else {
@@ -284,7 +332,6 @@ exports.submitEntry = function (req, res) {
 
 			}
 			);
-
 
 	
 }
