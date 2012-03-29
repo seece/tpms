@@ -24,9 +24,6 @@ mixin listcompos(ended)
                     span.compotitle= item.name
                 span.entries= 'entries: ' + item.entryamount
                 | <br />
-                - each entry, e in item.entries 
-                    div.entrybox
-                        p= entry.name
 
 div.toolbox
     h3 Compos running

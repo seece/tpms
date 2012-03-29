@@ -1,7 +1,10 @@
 div.toolbox
     h2= 'Submitting entry to ' 
         a(href=basepath+'compo/view/'+encodeURIComponent(componame))= componame
-    form( name='createcompo', action=basepath+'entry/submit/'+componame, method='post') 
+    form( name='createcompo', action=basepath+'entry/submit/'+componame, method='post', enctype='multipart/form-data') 
+        label file: 
+        input(type='file', name='file')
+        | <br />
         label entry name: 
         input(type='text',
             name='entryname', 
@@ -9,8 +12,7 @@ div.toolbox
         | <br />
         label your nickname:
         input(type='text',
-            name='nickname', 
-            autofocus)
+            name='nickname')
         | <br />
         label description (show on the screen):
         | <br />
