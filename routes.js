@@ -1,6 +1,6 @@
 
 var Log = require('log')
-	, config = require('./config')
+	, cjson = require('cjson')
 	, passport = require('passport')
 	, moment = require('moment')
 	, mongoose = require('mongoose')
@@ -10,6 +10,8 @@ var Log = require('log')
 	, users = require('./users')
 	;
 
+
+var config = cjson.load('./config.json');
 var log = new Log();
 
 // set up database
@@ -33,7 +35,17 @@ var extend = function(obj, defaults_obj) {
 
 // append default values before rendering
 var render = function (req, res, view, params) {
-	/* vars = {logged_in : req.isAuthenticated() };
+
+	// defaults not declared in the config.json (confusing?)
+	var vars = {
+		logged_in : req.isAuthenticated() ,
+		timeformat : config.time.timeformat,
+		success : false,
+		errormessage : false,
+		admin : false,
+		config : config
+	};
+
 	if (req.isAuthenticated()) {
 		vars.username = req.user.username;
 		if (req.user.admin === undefined) {
@@ -41,17 +53,6 @@ var render = function (req, res, view, params) {
 		} else {
 			vars.admin = true;
 		}
-	};
-	*/
-
-	// defaults not declared in the config.json (confusing?)
-	var vars = {
-		logged_in : false,
-		timeformat : config.time.timeformat,
-		success : false,
-		errormessage : false,
-		admin : false,
-		config : config
 	};
 
 	if (params === undefined) {
@@ -64,7 +65,7 @@ var render = function (req, res, view, params) {
 }
 
 var isAdmin = function(req, res) {
-	if (req.logged_in === true) {
+	if (req.isAuthenticated()) {
 		return true;
 	} else {
 		return false;
@@ -149,6 +150,7 @@ exports.listCompos = function (req, res, obj) {
 
 				var pretty_diff = prettifyDuration(diff);
 
+				//doc.deadline_timestamp = doc.deadline.getTime();
 				doc.diff = diff;
 				doc.countdown = pretty_diff;
 				doc.entryamount = doc.entries.length;

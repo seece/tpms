@@ -7,21 +7,24 @@ var express = require('express')
 , connect = require('connect')
 , Log = require('log')
 , users = require('./users')
+, cjson = require('cjson')
 //, Schema = mongoose.Schema
-, config = require('./config')
 , LocalStrategy = require('passport-local').Strategy
 , log = new Log('DEBUG');
+
+var config = cjson.load('./config.json');
 
 var app = express.createServer();
 
 passport.use(new LocalStrategy(
 			function (username, password, done) {
-				log.debug("%s %s",username, password);
 
 				if (users.db[username]) {
-					log.debug("lol");
 					if (users.db[username].password === password) {
-						return done(null, users.db[username]);
+						// use temporary variable to add username field
+						var u = users.db[username];
+						u.username = username;
+						return done(null, u);
 					}
 				}
 
@@ -31,12 +34,7 @@ passport.use(new LocalStrategy(
 
 var findUser = function (id, fn) {
 	for (var u in users.db) {
-		console.log(u);
 		if (id === users.db[u].id) {
-
-			var b =  users.db[u];
-			log.debug("calling with " );
-			console.log(users.db[u]);
 			fn(null, users.db[u]);
 		}
 
@@ -93,6 +91,12 @@ app.post('/user/login',
 											failureRedirect: '/user/login',
 											failureFlash: true
 		}));
+
+app.get('/user/logout', function(req, res){
+	req.logOut();
+	req.flash('success', 'You have logged out.');
+	res.redirect('/');
+});
 
 app.get('/compo/view/all', routes.listCompos);
 app.get('/compo/view/:componame', routes.viewCompo);

@@ -9,8 +9,19 @@ a(href=basepath+'entry/submit/'+compo.encoded_name) submit entry
 
 - var rootdir=basepath+'uploads/'+ '' + compo.directory_name;
 
-div.entrylist
+mixin listentries(late)
+	- var num = 0;
 	- each entry, i in compo.entries
-		div.entry
-			a(href=rootdir+'/'+entry.filename)=entry.name + ' by ' + entry.owner
+		- if (entry.created.getTime() > compo.deadline.getTime() == late)
+			- num++
+			div.entry
+				a(href=rootdir+'/'+entry.filename)=entry.name + ' by ' + entry.owner
+	- if (num==0)
+		p.silent none
 
+h3 Entries
+div.entrylist.intime
+	mixin listentries(false)
+h3 Late entries (wall of shame)
+div.entrylist.late
+	mixin listentries(true)
