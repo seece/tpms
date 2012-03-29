@@ -1,0 +1,7 @@
+exports.db = {
+	"user" :  {
+		
+		password : "pass",
+		id : 1337	
+		}
+}
