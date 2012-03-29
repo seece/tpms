@@ -6,11 +6,11 @@ mixin listcompos(ended)
 				if (item.ended === false)
 					span.timeleft ends in
 						| <br />
-						span.countdown=item.countdown
+						span.countdown(data-diff=item.diff)=item.countdown
 				if (item.ended === true)
 					span.timeleft ended
 						| <br />
-						span.countdown=item.clean_deadline + ' ago'
+						span.countdown(data-diff=item.diff)=item.clean_deadline + ' ago'
 				div.componame
 					div.iconwrap
 						- if (item.format === 'any')
