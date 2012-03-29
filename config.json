@@ -1,0 +1,25 @@
+{
+	"pms" : {
+		"singleuser" : false,
+
+		"defaults" : {
+			"title" : "tpms",
+			"basepath" : "http://localhost:3000/",
+			"username" : "guest"
+		},
+
+		"secret" : "09sav80dXp_q2"
+
+	},
+
+	"db" : {
+		"host"		: "localhost",
+		"database": "tpms"
+	},
+
+	"time" : {
+		"timeformat" : "YYYY-MM-DD HH:mm"
+	}
+	
+
+}
