@@ -1,5 +1,6 @@
 div.toolbox
-    h2= 'Submitting entry to ' + componame
+    h2= 'Submitting entry to ' 
+        a(href=basepath+'compo/view/'+encodeURIComponent(componame))= componame
     form( name='createcompo', action=basepath+'entry/submit/'+componame, method='post') 
         label entry name: 
         input(type='text',
@@ -8,7 +9,7 @@ div.toolbox
         | <br />
         label your nickname:
         input(type='text',
-            name='entryname', 
+            name='nickname', 
             autofocus)
         | <br />
         label description (show on the screen):

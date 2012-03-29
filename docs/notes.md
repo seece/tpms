@@ -17,7 +17,7 @@ The url format
 /compo/create/ 		GET: the compo submit form
 					POST: parse compo submit data
 /entry/view/:componame/:entryname		view single entry
-/entry/submit		entry submit form
+/entry/submit/:componame		entry submit form
 /admin/login		GET: show login form
 					POST: parse login data
 

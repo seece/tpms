@@ -8,10 +8,12 @@ var self = this;
 var Schema = mongoose.Schema;
  
 var entry = new Schema({
-		name		: String,
-		created		: Date,
-		url			: String,
-		format		: String 	// audio, image, text, binary
+		name		: {type : String, required : true},
+		owner		: {type : String, required : true},
+		downloads	: Number, 
+		description : { type : String, default: ""},
+		created		: { type : Date, default: Date.now },
+		url			: String
 
 });
 

@@ -242,28 +242,82 @@ exports.entryForm = function (req, res) {
 exports.submitEntry = function (req, res) {
 	log.debug('Someone trying to submit entry...');
 	compoExists(req.params.componame, function (compo) {
-		log.debug('Entry named %s seems to exist.', compo.name);
-		var entry = db.model.Entry();
 
-		//compo.entries.add(entry);
+		log.debug('Entry named %s seems to exist.', compo.name);
+		var entry = new db.model.Entry();
+		entry.name = req.body.entryname;
+		entry.description= req.body.description;
 		
-		//var c = new db.model.Compo();
-		var c = mongoose.model('Compo');
-		var query = { name: compo.name };
+		//entry.format = compo.format; // we'll deduce the format from the filename
+		entry.owner = req.body.nickname;
+
+		//console.log(compo.entries);
+		//console.log(entry);
+		//compo.entries.add(entry);
+
+		var new_entries = compo.entries;
+		new_entries.push(entry);
+		
+		var c = db.model.Compo;
+		//var c = mongoose.model('Compo');
+		var query = { name: compo.name }; // conditions
+		//var update = compo.entries;
+		var update = { entries : compo.entries };
+		//update.add(
 		var options = {};
 
-		c.update(query, { }, options, 
-				function (err, docs) {
-				render(req, res, 'compo', {
-					componame : compo.name,
-					success : 'Entry submitted successfully.'
+		// ADD SAVE HERE
+
+		/*
+		//c.markModified('entries');
+		db.model.Compo.findOne(query, function (err, item) {
+			if (item) {
+				console.log(item);
+				//item.entries = new_entries;
+				console.log(item);
+				console.log('ITEM TYPE: %s', typeof(item));
+
+				console.log(item.id);
+				item.entries.push(entry);
+
+				item.save(function (err) {
+					if (!err) {
+						log.debug('Entry added successfully.');
+					} else {
+						// errorz!
+						log.error("Mongoose couldn't save entry: " + err);
+					}
 				});
+
+			}
+		});
+		*/
+
+		/*
+		c.update(query, update, options, 
+				function (err, docs) {
+					if (err === null) {
+						log.debug("Entry '%s' added to the compo '%s'", entry.name, compo.name); 
+
+						req.flash('success', "Entry '"+entry.name+"' submitted successfully.");
+						render(req, res, 'compo', {
+							compo : compo,
+						});
+					} else {
+						req.flash('error', "Submission error: " + err.toString());
+						render(req, res, 'entryform', {
+							componame: compo.name 
+						});
+					}
 		},
 		function (err) {
 				log.error('Submission failed: ' + err.toString());
-		}
+				req.flash('error', 'Submission error: '+ err.toString());
 
-		);
+				render(req, res, 'entryform', {
+					componame: compo.name 
+		});
+		}); */
 
 
 	},
@@ -279,6 +333,7 @@ exports.viewCompo = function (req, res) {
 		exports.listCompos(req, res, {});
 	} else {
 		compoExists(req.params.componame, function (compo) {
+			compo.encoded_name = encodeURIComponent(compo.name);
 			render(req, res, 'compo', {compo : compo});	
 		},
 
