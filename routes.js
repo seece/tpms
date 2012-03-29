@@ -44,7 +44,7 @@ var render = function (req, res, view, params) {
 
 	// defaults not declared in the config.json (confusing?)
 	var vars = {
-		logged_in : true,
+		logged_in : false,
 		timeformat : config.time.timeformat,
 		success : false,
 		errormessage : false,
@@ -62,7 +62,11 @@ var render = function (req, res, view, params) {
 }
 
 var isAdmin = function(req, res) {
-	return true;
+	if (req.logged_in === true) {
+		return true;
+	} else {
+		return false;
+	}
 }
 
 var compoExists = function(componame, success, fail) {
@@ -109,6 +113,13 @@ var makeDirname = function (name) {
 	return name;
 };
 
+// hello leonarven
+var escapeString = function (name) {
+	name = name.replace(/<|>/g,"");
+	return name;
+}
+
+
 //console.log(trimCompoName( "   ,. 22    1)sa)naX[] } {{  /a/b.trw   ") + '|');
 
 // route exports
@@ -136,6 +147,7 @@ exports.listCompos = function (req, res, obj) {
 
 				var pretty_diff = prettifyDuration(diff);
 
+				doc.diff = diff;
 				doc.countdown = pretty_diff;
 				doc.entryamount = doc.entries.length;
 				doc.encoded_name = encodeURIComponent(doc.name); 
@@ -183,7 +195,8 @@ exports.createCompo = function (req, res) {
 
 		//console.log(req.body);
 
-		var componame = decodeURIComponent(req.body.componame);
+		var componame = escapeString( decodeURIComponent(req.body.componame));
+		componame = componame.substr(0, config.limit.componame);
 		var dirname = makeDirname(componame);
 
 		db.model.Compo.find({
@@ -199,7 +212,8 @@ exports.createCompo = function (req, res) {
 			} else {
 				// compo name is unique, continue
 
-				var description = req.body.description;
+				var description = escapeString(req.body.description);
+				description = description.substr(0, config.limit.description)
 				var format = req.body.format;
 				var end_time = req.body.date + ' ' + req.body.time; 
 				var username, deadline;
@@ -248,11 +262,12 @@ exports.createCompo = function (req, res) {
 
 	} else {
 		// error! only admin can create compos
+		req.flash('error', "I'm afraid I can't let you do that, Dave.");
+		render(req, res, '404', {});
 	}
 }
 
 exports.entryForm = function (req, res) {
-
 	compoExists(req.params.componame, function(compo) {
 				render(req, res, 'entryform', {
 					componame: compo.name 
@@ -268,7 +283,6 @@ exports.entryForm = function (req, res) {
 
 exports.submitEntry = function (req, res) {
 	// recieve the file, handle the parameters and add an entry to the db
-
 	
 	var componame = req.params.componame;
 	log.debug('Someone submitting entry to ' + componame);
@@ -356,3 +370,11 @@ exports.viewCompo = function (req, res) {
 	log.debug('Viewing compo.');	
 }
 
+exports.loginForm = function (req, res) {
+	render(req, res, 'login', {});
+}
+
+exports.userLogin = function (req, res) {
+	var username = req.body.username;	
+	var password = req.body.password;	
+}
