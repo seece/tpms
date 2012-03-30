@@ -16,14 +16,15 @@ a {
   color: #00B7FF;
 }
 
-
+a:hover {
+  color: #FFFFFF;
+}
 
 #centrum {
 	box-shadow: 0px 4px 5px #181818;
 	padding-bottom:0px;
 	margin-bottom:0px;
 }
-
 
 ul.menu {
 	list-style:none;
@@ -116,8 +117,11 @@ input.button {
 	text-decoration:underline;
 }
 
+div.propertybox {
+	background-color:#222;
+}
 
-.toolbox {
+div.toolbox {
 	background-color:#222;
 	padding:15px;
 	padding-top:8px;
@@ -146,11 +150,39 @@ input.button {
 	background-color:#555;
 }
 
-
-a.submitentry {
-	float:right;
+div.entry {
+	border-top:1px solid #777;
+	background-color:#555;
+	padding:4px;
+	padding-left:10px;
+	margin:5px;
+	margin-bottom:10px;
+	height:25px;
 }
 
+a.submitentry {
+	padding:6px 19px 6px 19px;
+	background-color:#522;
+	color:#DDA;
+	float:right;
+	margin-top:5px;
+}
+
+a.submitentry:hover {
+	background-color:#744;
+	color:#FFF;
+}
+
+.pressable{
+	border-top:1px solid #555;
+	border-left:1px solid #444;
+	background-color:#222;
+	box-shadow: 0px 2px 2px #101010;
+}
+
+.pressable:hover {
+	background-color:#383838;
+}
 span.entries {
 	position:relative;
 	color:#111;
@@ -186,6 +218,7 @@ div.componame {
 				0px 1px 0px #666;
 }
 
+/* Icons */
 
 .iconwrap {
 	border-radius:2px;
@@ -198,6 +231,7 @@ div.componame {
 	position:relative;
 	top:5px;
 }
+
 .icon {
 	width:16px;
 	height:16px;

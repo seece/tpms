@@ -1,8 +1,13 @@
 h2= compo.name
-p Compo: #{compo.name}
+div.toolbox
+	p Compo: #{compo.name}
+	p Format: #{compo.format}
+	p Description: #{compo.description}
 
-a(href=basepath+'entry/submit/'+compo.encoded_name) submit entry
+a(href=basepath+'entry/submit/'+compo.encoded_name).pressable.submitentry submit entry!
 
+- if (compo.ended)
+	p This competition has ended, but you can still submit late.
 
 // this could be ul, but the styles need to adjusted
 | <br \>
@@ -11,17 +16,21 @@ a(href=basepath+'entry/submit/'+compo.encoded_name) submit entry
 
 mixin listentries(late)
 	- var num = 0;
-	- each entry, i in compo.entries
-		- if (entry.created.getTime() > compo.deadline.getTime() == late)
-			- num++
-			div.entry
-				a(href=rootdir+'/'+entry.filename)=entry.name + ' by ' + entry.owner
-	- if (num==0)
-		p.silent none
+	- if (!compo.ended && !logged_in)
+		p Entries are hidden until the compo ends.
+	- else 
+		- each entry, i in compo.entries
+			- if (entry.created.getTime() > compo.deadline.getTime() == late)
+				- num++
+				div.entry
+					a(href=rootdir+'/'+entry.filename)=entry.name + ' by ' + entry.owner
+					
+		- if (num==0)
+			p.silent none
 
 h3 Entries
-div.entrylist.intime
-	mixin listentries(false)
+div.toolbox.entrylist.intime
+		mixin listentries(false)
 h3 Late entries (wall of shame)
-div.entrylist.late
+div.toolbox.entrylist.late
 	mixin listentries(true)

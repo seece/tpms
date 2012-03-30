@@ -12,6 +12,8 @@ html
 				include include/header
 				- if (logged_in)
 					p= 'You are logged in as ' + username
-				include include/menu
+					include include/menu_admin
+				- else 
+					include include/menu
 				!= body
 			include include/footer

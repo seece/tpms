@@ -369,6 +369,14 @@ exports.viewCompo = function (req, res) {
 	} else {
 		compoExists(req.params.componame, function (compo) {
 			compo.encoded_name = encodeURIComponent(compo.name);
+			// TODO: Wrap these in a function
+			var diff = moment(compo.deadline).diff(Date.now());
+
+			if (diff < 0) {
+				compo.ended = true;
+			} else {
+				compo.ended = false;
+			}
 			render(req, res, 'compo', {compo : compo});	
 		},
 
