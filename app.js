@@ -7,12 +7,19 @@ var express = require('express')
 , connect = require('connect')
 , Log = require('log')
 , users = require('./users')
+, fs = require('fs')
+, path = require('path')
 , cjson = require('cjson')
 //, Schema = mongoose.Schema
 , LocalStrategy = require('passport-local').Strategy
 , log = new Log('DEBUG');
 
 var config = cjson.load('./config.json');
+
+if (!path.existsSync(config.pms.upload_dir)) {
+	fs.mkdirSync(config.pms.upload_dir, 0777);
+	log.info('Created directory ' + config.pms.upload_dir);
+}
 
 var app = express.createServer();
 
@@ -106,6 +113,8 @@ app.post('/compo/create', routes.createCompo);
 app.get('/entry/submit/:componame', routes.entryForm);
 app.post('/entry/submit/:componame', routes.submitEntry);
 app.get('/entry/view/:entryname', routes.viewEntry);
+
+
 
 app.listen(3000);
 log.debug('started');
