@@ -1,4 +1,5 @@
-$(".notice").click(function (e) {
+$(".notice").live('click', function (e) {
+	var $this = $(this);
 	$(this).slideUp();
 });
 
@@ -70,5 +71,94 @@ $(document).ready(function () {
 				$this.text(prettifyDuration(diff));
 			}
 		}, 100);
+	});
+
+	$('a.open').toggle(function () {
+		// Toggle on
+		var $this = $(this),
+			$acc = $this.next('.accordion');
+
+		$this.text('Hide details');
+
+		$acc.slideDown();
+	}, function () {
+		// Toggle off
+		var $this = $(this),
+			$acc = $this.next('.accordion');
+
+		$this.text('View details');
+
+		$acc.slideUp();
+	});
+
+	// Sortables are sortable
+	$('.sortable').sortable({
+		activate: function (event, ui) {
+			var $ol = $(ui.sender);
+			$ol.toggleClass('sorting', true);
+		},
+		deactivate: function (event, ui) {
+			var $ol = $(ui.sender);
+			$ol.toggleClass('sorting', false);
+		},
+		change: function (event, ui) {
+			$('.vote ~ .submitbutton.disabled').removeClass('disabled').text('Update yer votes');
+		}
+	});
+	$('.sortable').disableSelection();
+
+	// Submit votes
+	$('.vote ~ .submitbutton').click(function (evt) {
+		var $this = $(this),
+			url,
+			entries,
+			entriesToBeSent = [];
+		evt.preventDefault();
+
+		if ($this.hasClass('disabled') || $this.data('sending')) {
+			return;
+		}
+		$this.css('background-color', '#334');
+		$this.data('sending', true);
+		$this.text('Sending yer votes...');
+
+		// Create a vote url
+		url = location.pathname.replace(/^\/compo\/view\//, "/compo/vote/$'");
+		console.log(url);
+
+		// Create the array of entries in the correct order
+		entries = $('.sortable li').toArray();
+
+		for (var i = 0; i < entries.length; i++) {
+			entriesToBeSent.push($(entries[i]).attr('data-entry'));
+		}
+
+		console.log(entriesToBeSent);
+
+//EMULATEAJAX setTimeout(function () {
+		$.ajax(url, {
+			data: {
+				order: entriesToBeSent
+			},
+			dataType: 'json',
+			success: function (data, textStatus) {
+				$this.data('sending', false);
+				$this.toggleClass('disabled', true);
+				$this.text('Votes sent!');
+				$this.css('background-color', '');
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				$this.data('sending', false);
+				alert('AJAX request failed!\n' + textStatus + "\n" + errorThrown);
+				$this.text('Yer voting has failed!');
+				$this.css('background-color', '');
+			}
+		});
+//EMULATEAJAX 		}, 2000);
+	});
+
+	// Disabled links do nothing
+	$('a.disabled').live('click', function (e) {
+		e.preventDefault();
 	});
 });

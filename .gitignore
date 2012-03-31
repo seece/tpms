@@ -3,7 +3,7 @@
 *.*~
 *.orig
 *.log
-./public/uploads/*
+public/uploads/*
 config.json
 renode.cmd
 users.js

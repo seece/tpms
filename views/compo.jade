@@ -4,7 +4,7 @@ div.toolbox
 	p Format: #{compo.format}
 	p Description: #{compo.description}
 
-a(href=basepath+'entry/submit/'+compo.encoded_name).pressable.submitentry submit entry!
+a(href=basepath+'entry/submit/'+compo.encoded_name).pressable.submitbutton submit entry!
 
 - if (compo.ended)
 	p This competition has ended, but you can still submit late.
@@ -18,19 +18,47 @@ mixin listentries(late)
 	- var num = 0;
 	- if (!compo.ended && !logged_in)
 		p Entries are hidden until the compo ends.
-	- else 
+	- else
 		- each entry, i in compo.entries
 			- if (entry.created.getTime() > compo.deadline.getTime() == late)
 				- num++
 				div.entry
-					a(href=rootdir+'/'+entry.filename)=entry.name + ' by ' + entry.owner
-					
+					h4=entry.name + ' by ' + entry.owner
+					a.download(href=rootdir+'/'+entry.filename)(title='Download ' + entry.name) &darr;
+					a.open(href="#") View details
+					div.accordion
+						p= entry.description
+						p
+							a(href=rootdir+'/'+entry.filename) Download entry
+
 		- if (num==0)
 			p.silent none
 
+mixin votebox()
+	- var num = 0;
+	- if (!compo.ended && !logged_in)
+		p Entries are hidden until the compo ends.
+	- else
+		- each entry, i in compo.entries
+			- num++
+			li(data-entry=entry._id)
+				div.entry.draggable.pressable
+					h4=entry.name + ' by ' + entry.owner
+
+		- if (num==0)
+			p.silent There's no entrys yet
+
+
+
 h3 Entries
 div.toolbox.entrylist.intime
-		mixin listentries(false)
+	mixin listentries(false)
 h3 Late entries (wall of shame)
 div.toolbox.entrylist.late
 	mixin listentries(true)
+- if (compo.ended)
+	h3 Vote for the winner!
+	div.toolbox.vote
+		ol.sortable
+			mixin votebox()
+	a(href='#').pressable.submitbutton submit yer votes!
