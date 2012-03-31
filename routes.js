@@ -103,6 +103,8 @@ var prettifyDuration = function (diff)  {
 	return days_string+hours+"h " + minutes + "m " + seconds + "s";
 }
 
+// TODO
+// don't use this in this file, move all to db.js
 var trimName = function (name) {
 	name = name.replace(/^ */g, "");
 	name = name.replace(/ *$/g, "");
@@ -117,14 +119,6 @@ var makeDirname = function (name) {
 	name = name.substr(0, 255);
 	name = trimName(name);
 	name = name.replace(/_{2,}/g, "_"); // no long lines of underscores
-	return name;
-};
-
-var trimEntryname = function (name) {
-	name = name.substr(0, 64);
-	name = trimName(name);
-	name = name.replace(/\//g, "");	// remove forward slashes
-	name = name.replace(/\"/g, "");	
 	return name;
 };
 
@@ -301,15 +295,6 @@ exports.entryForm = function (req, res) {
 
 }
 
-var validEntryname = function (name) {
-	name = trimEntryname(name);
-	if (name !== '') {
-		return true;
-	} else {
-		return false;
-	}
-}
-
 exports.submitEntry = function (req, res) {
 	// recieve the file, handle the parameters and add an entry to the db
 	
@@ -320,7 +305,7 @@ exports.submitEntry = function (req, res) {
 	var description = req.body.description;
 	var old_entries;
 
-	if (validEntryname(entryname)) {
+		//entryname = trimEntryname(entryname);
 
 		db.model.Compo.findOne({name:componame}, {}, {},
 				function (err, doc) {
@@ -357,10 +342,10 @@ exports.submitEntry = function (req, res) {
 
 					var writePath = config.pms.upload_dir + compo_dir + '\\' + filename;
 					if (doc.directory_name) {
-					var jea = doc.directory_name;
-					fs.writeFileSync(config.pms.upload_dir + jea + '/' + filename, fileBuffer);
+						var jea = doc.directory_name;
+						fs.writeFileSync(config.pms.upload_dir + jea + '/' + filename, fileBuffer);
 					} else {
-					log.error("Empty directory name in %s!", doc.name);
+						log.error("Empty directory name in %s!", doc.name);
 					}
 
 					req.flash('success', "Entry '"+entryname+"' submitted successfully!");
@@ -379,14 +364,6 @@ exports.submitEntry = function (req, res) {
 
 				}
 		);
-	} else {
-		// error! invalid name
-		req.flash('error', 'Invalid entry name');
-		render(req, res, '/', {}); // TODO add proper redirect to entry form
-	}
-
-
-
 	
 }
 
