@@ -14,7 +14,7 @@ var express = require('express')
 , LocalStrategy = require('passport-local').Strategy
 , log = new Log('DEBUG');
 
-var config = cjson.load('./config.json');
+var config = cjson.load('config.json');
 
 if (!path.existsSync(config.pms.upload_dir)) {
 	fs.mkdirSync(config.pms.upload_dir, 0777);

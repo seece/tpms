@@ -3,7 +3,7 @@
 		"singleuser" : false,
 
 		"defaults" : {
-			"title" : "tpms",
+			"title" : "tpms-dev",
 			"basepath" : "http://localhost:3000/",
 			"username" : "guest"
 		},
@@ -22,12 +22,11 @@
 
 	"db" : {
 		"host"		: "localhost",
-		"database": "tpms"
+		"database": "tpms-dev"
 	},
 
 	"time" : {
 		"timeformat" : "YYYY-MM-DD HH:mm"
 	}
 	
-
 }

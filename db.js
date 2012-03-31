@@ -30,27 +30,28 @@ function entryNameValidator(str) {
 }
  
 var entry = new Schema({
-		name				: { type : String, required : true, validate: [entryNameValidator, 'invalid name']},
-		owner				: { type : String, required : true},
+		name				: { type : String, required : true },
+		owner				: { type : String, required : true },
 		downloads		: Number, 
-		points      : { type : Number, default: 0},
-		description : { type : String, default: ""},
+		points      : { type : Number, default: 0 },
+		description : { type : String, default: "" },
 		created			: { type : Date,  default: Date.now },
 		// file has to be found from /uploads/componame/filename
-		filename	: { type : String, required : true}
+		filename	: { type : String, required : true }
 });
 
 var compo = new Schema({
-		name		: { type : String, required : true },
-		directory_name : { type : String, required : true },
-		description : String,
-		deadline	: { type : Date, required : true },
-		entries		: [entry],
-		format		: String
+		name		        : { type : String, required : true },
+		directory_name  : { type : String, required : true },
+		description     : String,
+		deadline	      : { type : Date, required : true },
+		entries		      : [entry], // list of entries
+		format		      : String
 });
 
 entry.pre('save', function (next) {
 	// put IRC notification here
+	console.log('magic');
 	next();
 });
 
