@@ -101,7 +101,7 @@ $(document).ready(function () {
 			var $ol = $(ui.sender);
 			$ol.toggleClass('sorting', false);
 		},
-		change: function (event, ui) {
+		stop: function (event, ui) {
 			$('.vote ~ .submitbutton.disabled').removeClass('disabled').text('Update yer votes');
 		}
 	});
