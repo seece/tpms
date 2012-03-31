@@ -1,11 +1,12 @@
 body {
 	background-color:#282828;
 	color:#FFF;
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-  max-width:700px;
-  margin-left:auto;
-  margin-right:auto;
+	padding: 50px;
+	font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+	max-width:700px;
+	margin-left:auto;
+	margin-right:auto;
+	overflow-y: scroll;
 }
 
 h2 {
@@ -13,11 +14,11 @@ h2 {
 }
 
 a {
-  color: #00B7FF;
+	color: #00B7FF;
 }
 
 a:hover {
-  color: #FFFFFF;
+	color: #FFFFFF;
 }
 
 #centrum {
@@ -47,6 +48,7 @@ input.button {
 	background-color:#333;
 	padding:15px;
 	padding-bottom:15px;
+	overflow: hidden;
 }
 
 #footer {
@@ -131,10 +133,12 @@ div.toolbox {
 	margin-top:5px;
 	margin-bottom:5px;
 }
-
+div.toolbox.entrylist, div.toolbox.vote {
+	padding-top: 15px;
+}
 
 .compobox {
-	border-top: 1px solid #777;	
+	border-top: 1px solid #777;
 	display: block;
 	text-decoration:none;
 	margin-top:6px;
@@ -157,10 +161,51 @@ div.entry {
 	padding-left:10px;
 	margin:5px;
 	margin-bottom:10px;
-	height:25px;
+	min-height:25px;
+	height: auto;
+	position: relative;
+}
+div.entry.draggable {
+	cursor: move;
+}
+div.toolbox.vote ol {
+	margin: 0;
+	padding: 0 0 0 20px;
+}
+div.toolbox.vote ol.sorting {
+	list-style-type: none;
+	background-color: rgba(255, 255, 0, 0.1);
+}
+div.toolbox.vote ol.sorting li {
+	padding: 1em 0;
+}
+div.toolbox.vote li {
+	background-color: transparent;
+	float: none;
+	padding: 0;
+}
+div.entry h4 {
+	margin: 0;
+	padding: 0 10px 0 0;
+	font-size: 100%;
+	font-weight: bold;
+	display: inline;
+}
+a.download {
+	position: absolute;
+	display: block;
+	width: 16px;
+	height: 16px;
+	top: 4px;
+	right: 4px;
+	text-decoration: none;
+	text-indent: -999em;
+	background: no-repeat url('images/download.png') center center #333333;
+	padding: 2px;
 }
 
-a.submitentry {
+
+a.submitbutton {
 	padding:6px 19px 6px 19px;
 	background-color:#522;
 	color:#DDA;
@@ -168,9 +213,14 @@ a.submitentry {
 	margin-top:5px;
 }
 
-a.submitentry:hover {
+a.submitbutton:hover {
 	background-color:#744;
 	color:#FFF;
+}
+
+a.submitbutton.disabled, a.submitbutton.disabled:hover	{
+	background-color: #343;
+	color: #dda;
 }
 
 .pressable{
@@ -270,18 +320,28 @@ label {
 	padding-right: 10px;
 	padding-top: 0.25em;
 	vertical-align: top;
-    cursor: pointer;
+	cursor: pointer;
 }
 input, textarea {
 	width: 200px;
 	padding: 2px;
 	display: inline-block;
-    margin-right: 10px;
+	margin-right: 10px;
 }
 .submit input {
-    width: 125px;
-    margin-left: 134px;
+	width: 125px;
+	margin-left: 134px;
 }
 textarea {
 	height: 5em;
+}
+
+/** Accordions in single entry view */
+div.accordion {
+	display: none;
+	margin-left: 20px;
+}
+div.accordion p {
+	margin: 0.5em 0 4px 0;
+	padding: 0;
 }

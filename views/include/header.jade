@@ -10,8 +10,6 @@ else
 	- var register_url = basepath + 'user/register'
 	div#loginbox
 		a(href=login_url) login
-		|  |
-		span register
 
 h1
 	a(href=basepath)#bigtitle the party management system
@@ -20,15 +18,16 @@ mixin showAlert(alerts)
 	for alert in alerts
 		div #{alert}
 
-- if (flash.info)
-	div.notice.alert-blue
-		mixin showAlert(flash.info)
+div.notifications
+	- if (flash.info)
+		div.notice.alert-blue
+			mixin showAlert(flash.info)
 
-- if (flash.success)
-	div.notice.notice-green
-		mixin showAlert(flash.success)
+	- if (flash.success)
+		div.notice.notice-green
+			mixin showAlert(flash.success)
 
-- if (flash.error)
-	div.notice.notice-red
-		mixin showAlert(flash.error)
+	- if (flash.error)
+		div.notice.notice-red
+			mixin showAlert(flash.error)
 
