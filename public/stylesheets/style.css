@@ -170,14 +170,21 @@ div.entry.draggable {
 }
 div.toolbox.vote ol {
 	margin: 0;
-	padding: 0 0 0 20px;
+	padding: 10px 20px;
+	border: 1px dashed transparent;
 }
 div.toolbox.vote ol.sorting {
+	/* background-color: #333; */
+	border-color: #444;
 	list-style-type: none;
-	background-color: rgba(255, 255, 0, 0.1);
 }
-div.toolbox.vote ol.sorting li {
-	padding: 1em 0;
+div.toolbox.vote .ui-sortable-placeholder {
+	height: 25px;
+	padding:4px;
+	padding-left:10px;
+	margin:5px;
+	margin-bottom:10px;
+	border-top: 1px solid black;
 }
 div.toolbox.vote li {
 	background-color: transparent;

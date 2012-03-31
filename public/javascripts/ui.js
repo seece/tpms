@@ -103,7 +103,9 @@ $(document).ready(function () {
 		},
 		stop: function (event, ui) {
 			$('.vote ~ .submitbutton.disabled').removeClass('disabled').text('Update yer votes');
-		}
+		},
+		containment: 'parent',
+		tolerance: 'pointer'
 	});
 	$('.sortable').disableSelection();
 
@@ -141,6 +143,7 @@ $(document).ready(function () {
 				order: entriesToBeSent
 			},
 			dataType: 'json',
+			type: 'POST',
 			success: function (data, textStatus) {
 				$this.data('sending', false);
 				$this.toggleClass('disabled', true);
