@@ -1,4 +1,5 @@
-$(".notice").click(function (e) {
+$(".notice").live('click', function (e) {
+	var $this = $(this);
 	$(this).slideUp();
 });
 
@@ -70,5 +71,52 @@ $(document).ready(function () {
 				$this.text(prettifyDuration(diff));
 			}
 		}, 100);
+	});
+
+	$('a.open').toggle(function () {
+		// Toggle on
+		var $this = $(this),
+			$acc = $this.next('.accordion');
+
+		$this.text('Hide details');
+
+		$acc.slideDown();
+	}, function () {
+		// Toggle off
+		var $this = $(this),
+			$acc = $this.next('.accordion');
+
+		$this.text('View details');
+
+		$acc.slideUp();
+	});
+
+	// Sortables are sortable
+	$('.sortable').sortable({
+		activate: function (event, ui) {
+			var $ol = $(ui.sender);
+			$ol.toggleClass('sorting', true);
+		},
+		deactivate: function (event, ui) {
+			var $ol = $(ui.sender);
+			$ol.toggleClass('sorting', false);
+		},
+		change: function (event, ui) {
+			$('.vote ~ .submitbutton.disabled').removeClass('disabled').text('Update yer votes');
+		}
+	});
+	$('.sortable').disableSelection();
+
+	// Submit votes
+	$('.vote ~ .submitbutton').click(function (evt) {
+		var $this = $(this);
+		evt.preventDefault();
+		$this.toggleClass('disabled', true);
+		$this.text('Votes saved!');
+	});
+
+	// Disabled links do nothing
+	$('a.disabled').live('click', function (e) {
+		e.preventDefault();
 	});
 });
