@@ -91,7 +91,6 @@ var compoExists = function(componame, success, fail) {
 		fail();
 	}
 
-
 };
 
 // takes in millisecs
@@ -104,15 +103,28 @@ var prettifyDuration = function (diff)  {
 	return days_string+hours+"h " + minutes + "m " + seconds + "s";
 }
 
-// trims and replaces non alphabetical characters with substitutes
-var makeDirname = function (name) {
-	name = name.substr(0, 255);
+var trimName = function (name) {
 	name = name.replace(/^ */g, "");
 	name = name.replace(/ *$/g, "");
 	name = name.replace(/[,\.\/\\()]/g, "");
 	name = name.replace(/ /g, "_");
 	name = name.replace(/[^A-Za-z_0-9]/g, "");
+	return name;
+};
+
+// trims and replaces non alphabetical characters with substitutes
+var makeDirname = function (name) {
+	name = name.substr(0, 255);
+	name = trimName(name);
 	name = name.replace(/_{2,}/g, "_"); // no long lines of underscores
+	return name;
+};
+
+var trimEntryname = function (name) {
+	name = name.substr(0, 64);
+	name = trimName(name);
+	name = name.replace(/\//g, "");	// remove forward slashes
+	name = name.replace(/\"/g, "");	
 	return name;
 };
 
@@ -121,9 +133,6 @@ var escapeString = function (name) {
 	name = name.replace(/<|>/g,"");
 	return name;
 }
-
-
-//console.log(trimCompoName( "   ,. 22    1)sa)naX[] } {{  /a/b.trw   ") + '|');
 
 // route exports
 
@@ -292,6 +301,15 @@ exports.entryForm = function (req, res) {
 
 }
 
+var validEntryname = function (name) {
+	name = trimEntryname(name);
+	if (name !== '') {
+		return true;
+	} else {
+		return false;
+	}
+}
+
 exports.submitEntry = function (req, res) {
 	// recieve the file, handle the parameters and add an entry to the db
 	
@@ -302,63 +320,72 @@ exports.submitEntry = function (req, res) {
 	var description = req.body.description;
 	var old_entries;
 
-	db.model.Compo.findOne({name:componame}, {}, {},
-			function (err, doc) {
+	if (validEntryname(entryname)) {
+
+		db.model.Compo.findOne({name:componame}, {}, {},
+				function (err, doc) {
 				console.log(err);
 				if (!err) {
-					old_entries = doc.entries;
+				old_entries = doc.entries;
 
-					var query = { name : componame };
-					var filename = req.files.file.name;
-					filename = config.pms.name_prefix_in_uploads ? nickname +'_-_' + filename : filename;
+				var query = { name : componame };
+				var filename = req.files.file.name;
+				filename = config.pms.name_prefix_in_uploads ? nickname +'_-_' + filename : filename;
 
-					var newEntry = new db.model.Entry();
-					newEntry.name = entryname;
-					newEntry.owner = nickname;
-					newEntry.description = description;
-					newEntry.filename = filename;
+				var newEntry = new db.model.Entry();
+				newEntry.name = entryname;
+				newEntry.owner = nickname;
+				newEntry.description = description;
+				newEntry.filename = filename;
 
-					var new_entry_list = old_entries;
-					old_entries.push(newEntry);
+				var new_entry_list = old_entries;
+				old_entries.push(newEntry);
 
-					db.model.Compo.update(query, { entries : new_entry_list }, {}, 
-							function (err, numAffected) {
-								if (!err) {
+				db.model.Compo.update(query, { entries : new_entry_list }, {}, 
+					function (err, numAffected) {
+					if (!err) {
 
-									// database update successful, now move the file
-									log.debug('uploaded %s (%s Kb) to %s as %s'
-												, req.files.file.name
-												, req.files.file.size / 1024 | 0 
-												, req.files.file.path
-												, req.body.entryname);
+					// database update successful, now move the file
+					log.debug('uploaded %s (%s Kb) to %s as %s'
+						, req.files.file.name
+						, req.files.file.size / 1024 | 0 
+						, req.files.file.path
+						, req.body.entryname);
 
-									var fileBuffer = fs.readFileSync(req.files.file.path);
-									var compo_dir = doc.directory_name;
+					var fileBuffer = fs.readFileSync(req.files.file.path);
+					var compo_dir = doc.directory_name;
 
-									var writePath = config.pms.upload_dir + compo_dir + '\\' + filename;
-									if (doc.directory_name) {
-										var jea = doc.directory_name;
-										fs.writeFileSync(config.pms.upload_dir + jea + '/' + filename, fileBuffer);
-									} else {
-										log.error("Empty directory name in %s!", doc.name);
-									}
+					var writePath = config.pms.upload_dir + compo_dir + '\\' + filename;
+					if (doc.directory_name) {
+					var jea = doc.directory_name;
+					fs.writeFileSync(config.pms.upload_dir + jea + '/' + filename, fileBuffer);
+					} else {
+					log.error("Empty directory name in %s!", doc.name);
+					}
 
-									req.flash('success', "Entry '"+entryname+"' submitted successfully!");
-									res.redirect('/');
-								} else {
-									// an error occured
-									log.error(err);	
-									req.flash('error', "Mongoose error: " + err);
-									render(req, res, '404', {});
-								}
-							});
+					req.flash('success', "Entry '"+entryname+"' submitted successfully!");
+					res.redirect('/');
+					} else {
+						// an error occured
+						log.error(err);	
+						req.flash('error', "Mongoose error: " + err);
+						render(req, res, '404', {});
+					}
+					});
 
 				} else {
 
 				}
 
-			}
-			);
+				}
+		);
+	} else {
+		// error! invalid name
+		req.flash('error', 'Invalid entry name');
+		render(req, res, '/', {}); // TODO add proper redirect to entry form
+	}
+
+
 
 	
 }

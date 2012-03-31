@@ -110,6 +110,8 @@ app.get('/compo/view/:componame', routes.viewCompo);
 app.get('/compo/create', routes.compoForm);
 app.post('/compo/create', routes.createCompo);
 
+app.post('/compo/vote/:componame');
+
 app.get('/entry/submit/:componame', routes.entryForm);
 app.post('/entry/submit/:componame', routes.submitEntry);
 app.get('/entry/view/:entryname', routes.viewEntry);
