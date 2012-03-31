@@ -41,7 +41,7 @@ mixin votebox()
 	- else
 		- each entry, i in compo.entries
 			- num++
-			li
+			li(data-entry=entry._id)
 				div.entry.draggable.pressable
 					h4=entry.name + ' by ' + entry.owner
 
